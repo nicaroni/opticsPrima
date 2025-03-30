@@ -3,10 +3,20 @@ import Header from "./components/Header";
 import Section from "./components/Section";
 
 function App() {
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      window.scrollTo({
+        behavior: 'smooth',
+        top: element.offsetTop
+      });
+    }
+  };
+
   return (
     <div className="font-sans text-gray-900">
       {/* Header / Nav */}
-      <Header />
+      <Header scrollToSection={scrollToSection} />
 
       {/* Hero Section */}
       <section
