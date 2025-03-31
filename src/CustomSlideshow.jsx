@@ -11,17 +11,17 @@ export default function CustomSlideshow() {
   const [isMoving, setIsMoving] = useState(false);
   const [direction, setDirection] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [animationTrigger, setAnimationTrigger] = useState(false);
   const containerRef = useRef(null);
   
   // List of slide components with proper keys
   const slides = [
-    <SectionOne key="section1" />,
-    <SectionSix key="section6" />,
-    <SectionTwo key="section2" />,
-    <SectionThree key="section3" />,
-    <SectionFour key="section4" />,
-    <SectionFive key="section5" />,
-    
+    <SectionOne key="section1" direction={direction} animate={animationTrigger} />,
+    <SectionSix key="section6" direction={direction} animate={animationTrigger} />,
+    <SectionTwo key="section2" direction={direction} animate={animationTrigger} />,
+    <SectionThree key="section3" direction={direction} animate={animationTrigger} />,
+    <SectionFour key="section4" direction={direction} animate={animationTrigger} />,
+    <SectionFive key="section5" direction={direction} animate={animationTrigger} />,
   ];
 
   // Initial load effect with proper preloading
@@ -37,12 +37,14 @@ export default function CustomSlideshow() {
         containerRef.current.style.visibility = 'visible';
       }
       setIsLoaded(true);
+      // Trigger initial animation
+      setAnimationTrigger(prev => !prev);
     }, 100);
     
     return () => clearTimeout(timer);
   }, []);
 
-  // Enhanced navigation with direction tracking
+  // Enhanced navigation with direction tracking and animation
   const navigate = (newIndex) => {
     if (isMoving) return;
     
@@ -58,10 +60,15 @@ export default function CustomSlideshow() {
       setActiveIndex(newIndex);
     }
     
+    // Trigger the animation in the new slide
+    setTimeout(() => {
+      setAnimationTrigger(prev => !prev);
+    }, 50);
+    
     // Reset moving state after transition
     setTimeout(() => {
       setIsMoving(false);
-    }, 1000);
+    }, 1500); // Increased to allow for sequential animations
   };
 
   // Auto-advance
@@ -96,17 +103,8 @@ export default function CustomSlideshow() {
         }`}
         ref={containerRef}
       >
-        {/* Current slide with enhanced transitions */}
-        <div 
-          className="w-full h-full"
-          style={{
-            transition: "all 800ms cubic-bezier(0.25, 0.1, 0.25, 1.0)",
-            opacity: isMoving ? 0.9 : 1,
-            transform: isMoving 
-              ? `scale(${0.98}) translateX(${direction * -2}%)` 
-              : "scale(1) translateX(0)",
-          }}
-        >
+        {/* Current slide */}
+        <div className="w-full h-full">
           {slides[activeIndex]}
         </div>
         
@@ -134,7 +132,7 @@ export default function CustomSlideshow() {
         </button>
         
         {/* Enhanced indicator dots */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/8 flex gap-3 z-20">
           {slides.map((_, i) => (
             <button
               key={i}
