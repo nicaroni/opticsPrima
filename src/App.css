@@ -1,0 +1,21 @@
+/* Add this to your CSS file */
+@keyframes star-glow {
+    0%, 100% { 
+      filter: drop-shadow(0 0 2px rgba(250, 204, 21, 0.7));
+      transform: scale(1);
+    }
+    50% { 
+      filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.9)); 
+      transform: scale(1.05);
+    }
+  }
+  
+  .star-glow {
+    animation: star-glow 2s infinite ease-in-out;
+  }
+  
+  /* Animation delays */
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-400 { animation-delay: 400ms; }
