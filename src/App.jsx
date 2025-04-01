@@ -48,7 +48,12 @@ function App() {
       <CustomSlideshow />
     </>
     <>
-      <BrandSlider />
+    <div 
+    onClick={() => scrollToSection('collection')} 
+    className="cursor-pointer hover:opacity-90 transition-opacity"
+  >
+    <BrandSlider />
+  </div>
     </>
 
       {/* Dioptric Glasses */}

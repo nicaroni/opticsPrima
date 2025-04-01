@@ -13,7 +13,7 @@ function Header({ scrollToSection }) {
                 onClick={() => scrollToSection('dioptric')}
                 className="hover:text-teal-600"
               >
-                Dioptric Glasses
+                Диоптрични очила
               </button>
             </li>
             <li>
@@ -21,7 +21,7 @@ function Header({ scrollToSection }) {
                 onClick={() => scrollToSection('sunglasses')}
                 className="hover:text-teal-600"
               >
-                Sunglasses
+                Слънчеви очила
               </button>
             </li>
             <li>
@@ -29,7 +29,7 @@ function Header({ scrollToSection }) {
                 onClick={() => scrollToSection('eye-exams')}
                 className="hover:text-teal-600"
               >
-                Eye Exams
+                Очен преглед
               </button>
             </li>
             <li>
@@ -37,7 +37,7 @@ function Header({ scrollToSection }) {
                 onClick={() => scrollToSection('contact')}
                 className="hover:text-teal-600"
               >
-                Contact
+                Контакти
               </button>
             </li>
           </ul>
