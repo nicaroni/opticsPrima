@@ -49,6 +49,12 @@ export default function SectionSix({ direction, animate }) {
             <p className="text-xl mb-6 max-w-xl text-gray-600">
               Работим с висококласна апаратура за точно измерване и максимална грижа за твоето зрение.
             </p>
+            <div className="space-x-4">
+            <button className="bg-white text-black font-semibold py-2 px-6 rounded-full shadow-md hover:bg-gray-200">
+              Запиши час 
+            </button>
+           
+          </div>
           </div>
   
           <div 

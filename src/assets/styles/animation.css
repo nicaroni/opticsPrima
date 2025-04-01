@@ -1,0 +1,101 @@
+/* Add to src/assets/styles/animations.css */
+.animate-fade-in {
+    animation: fadeIn 1s ease-out forwards;
+  }
+  
+  .animate-fade-in-right {
+    animation: fadeInRight 1s ease-out forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+/* New classes for scroll-triggered animations */
+.scroll-reveal {
+  opacity: 0;
+  transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal-up {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.scroll-reveal-right {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+/* for BrandSlider effects */
+/* ---------------------- */
+
+
+.brand-slider-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.brand-slider-track {
+  display: inline-flex;
+  gap: 32px;
+  /* Initial position before animation starts */
+  transform: translateX(0);
+}
+
+.brand-slider-wrapper.animate .brand-slider-track {
+  /* Animation on by default */
+  animation: slideTrack var(--animation-duration, 80s) linear infinite;
+}
+
+.brand-slider-wrapper.paused .brand-slider-track {
+  /* Pause the animation when wrapper has .paused class */
+  animation-play-state: paused;
+}
+
+.brand-item {
+  flex: 0 0 auto;
+  padding: 0 4px;
+}
+
+@keyframes slideTrack {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* This will be dynamically calculated to match content width */
+    transform: translateX(-50%);
+  }
+}
+
+/* Ensure the slider section is full width */
+.brand-slider-section {
+  max-width: 100vw;
+  width: 100%;
+}
+
+  /* for BrandSlider effects */
+  /* ------------------------- */

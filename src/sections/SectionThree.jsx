@@ -75,6 +75,11 @@ export default function SectionThree({ direction, animate }) {
             <p className="text-xl mb-6 max-w-xl text-gray-600">
               Само сега – комбинирай визия и качество на специална цена. 
             </p>
+            <div className="space-x-4">
+            <button className="bg-teal-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-teal-700">
+            Виж част от моделите
+            </button>
+          </div>
           </div>
       </section>
     </div>

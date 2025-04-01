@@ -49,6 +49,12 @@ export default function SectionFive({ direction, animate }) {
               <p className="text-xl mb-6 max-w-xl text-gray-600">
               Разбери повече за грижата, която стои зад правилно подбраните очила.
               </p>
+              <div className="space-x-4">
+            <button className="bg-white text-black font-semibold py-2 px-6 rounded-full shadow-md hover:bg-gray-200">
+              Запиши час 
+            </button>
+           
+          </div>
           </div>
 
           <div 

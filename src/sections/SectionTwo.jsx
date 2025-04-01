@@ -49,6 +49,13 @@ export default function SectionTwo({ direction, animate }) {
             <p className="text-xl mb-6 max-w-xl text-gray-600">
             Премиум слънчеви очила, които предпазват и подчертават твоята индивидуалност.
             </p>
+
+            <div className="space-x-4">
+           
+            <button className="bg-teal-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-teal-700">
+              Нови предложения
+            </button>
+          </div>
         </div>
 
         <div 

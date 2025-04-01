@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 
 // Sample glasses data - replace with your actual glasses images
@@ -28,66 +28,118 @@ const glassesData = [
 export default function GlassesShowcase() {
   const [currentPage, setCurrentPage] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [showEdgeOpacity, setShowEdgeOpacity] = useState(true);
-  const itemsPerPage = 4; // We'll display 4 fully visible items plus 2 semi-visible ones
+  const [edgeOpacity, setEdgeOpacity] = useState(0); // Start with 0 opacity (fully visible)
+  const opacityTimerRef = useRef(null);
+  
+  const itemsPerPage = 4;
   const totalPages = Math.ceil(glassesData.length / itemsPerPage);
   
-  // Function to get the actual items to display for ALL pages
+  // Function to get all page items remains unchanged
   const getAllPageItems = () => {
     const result = [];
     
-    // Generate all pages
     for (let page = 0; page < totalPages; page++) {
       const startIdx = page * itemsPerPage;
       const currentItems = glassesData.slice(startIdx, startIdx + itemsPerPage);
       
-      // Get the previous item (for left peek)
       const prevItemIdx = (startIdx - 1 + glassesData.length) % glassesData.length;
       const prevItem = glassesData[prevItemIdx];
       
-      // Get the next item (for right peek)
       const nextItemIdx = (startIdx + itemsPerPage) % glassesData.length;
       const nextItem = glassesData[nextItemIdx];
       
-      // Add this page's items
       result.push([prevItem, ...currentItems, nextItem]);
     }
     
     return result;
   };
 
+  // Initialize edge items with fade effect
+  useEffect(() => {
+    // When component mounts, start with fully visible then fade to semi-transparent
+    const initialFadeTimer = setTimeout(() => {
+      animateOpacityTo(1);
+    }, 500);
+    
+    return () => clearTimeout(initialFadeTimer);
+  }, []);
+
   const goToNextPage = () => {
     if (!isAnimating) {
       setIsAnimating(true);
-      setShowEdgeOpacity(false); // Reset opacity to full
       
-      // Circular navigation - if at last page, go to first page
+      // Clear any existing opacity animation
+      if (opacityTimerRef.current) {
+        clearTimeout(opacityTimerRef.current);
+      }
+      
+      // First make edge items fully visible (opacity = 0 for the overlay)
+      setEdgeOpacity(0);
+      
+      // Change page
       setCurrentPage(prev => (prev === totalPages - 1) ? 0 : prev + 1);
       
-      // Start fade effect almost immediately for smoother transition
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          setShowEdgeOpacity(true);
-        }, 300); // Reduced delay for faster effect onset
-      });
+      // After position transition completes, fade edge items
+      opacityTimerRef.current = setTimeout(() => {
+        animateOpacityTo(1);
+      }, 400); // Wait for most of the position transition to complete
     }
   };
 
   const goToPrevPage = () => {
     if (!isAnimating) {
       setIsAnimating(true);
-      setShowEdgeOpacity(false); // Reset opacity to full
       
-      // Circular navigation - if at first page, go to last page
+      // Clear any existing opacity animation
+      if (opacityTimerRef.current) {
+        clearTimeout(opacityTimerRef.current);
+      }
+      
+      // First make edge items fully visible (opacity = 0 for the overlay)
+      setEdgeOpacity(0);
+      
+      // Change page
       setCurrentPage(prev => (prev === 0) ? totalPages - 1 : prev - 1);
       
-      // Start fade effect almost immediately for smoother transition
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          setShowEdgeOpacity(true);
-        }, 300); // Reduced delay for faster effect onset
-      });
+      // After position transition completes, fade edge items
+      opacityTimerRef.current = setTimeout(() => {
+        animateOpacityTo(1);
+      }, 400); // Wait for most of the position transition to complete
     }
+  };
+
+  // Animated opacity transition function
+  const animateOpacityTo = (targetValue) => {
+    // Use requestAnimationFrame for smoother animations
+    const startValue = edgeOpacity;
+    const startTime = performance.now();
+    const duration = 800; // Animation duration in ms
+    
+    const animateFrame = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      
+      if (elapsed < duration) {
+        // Calculate progress with easing
+        const progress = elapsed / duration;
+        const easedProgress = progress < 0.5 
+          ? 4 * progress * progress * progress 
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2; // Cubic easing
+        
+        // Calculate current opacity
+        const newOpacity = startValue + (targetValue - startValue) * easedProgress;
+        
+        // Update state
+        setEdgeOpacity(newOpacity);
+        
+        // Continue animation
+        requestAnimationFrame(animateFrame);
+      } else {
+        // Animation complete
+        setEdgeOpacity(targetValue);
+      }
+    };
+    
+    requestAnimationFrame(animateFrame);
   };
 
   useEffect(() => {
@@ -121,7 +173,7 @@ export default function GlassesShowcase() {
           <ChevronLeftIcon className="h-6 w-6 text-gray-700" />
         </button>
 
-        {/* Carousel container - the viewport */}
+        {/* Carousel container */}
         <div className="overflow-hidden mx-auto w-full max-w-5xl py-2">
           {/* Sliding container */}
           <div 
@@ -138,26 +190,30 @@ export default function GlassesShowcase() {
                     className="w-1/6 px-2 relative" 
                   >
                     <div 
-                      className={`bg-white rounded-lg p-3 shadow-sm flex flex-col items-center h-full
+                      className="bg-white rounded-lg p-3 shadow-sm flex flex-col items-center h-full
                         transition-all duration-1000 ease-in-out hover:shadow-md hover:-translate-y-1
-                        relative`}
+                        relative"
                     >
-                      {/* Gradient overlay for edge items */}
-                      {index === 0 && showEdgeOpacity && (
+                      {/* Gradient overlay for left edge item */}
+                      {index === 0 && (
                         <div 
-                          className="absolute inset-0 rounded-lg pointer-events-none transition-opacity duration-800 ease-in-out z-10"
+                          className="absolute inset-0 rounded-lg pointer-events-none z-10"
                           style={{ 
                             background: 'linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 180%)',
-                            opacity: 1
+                            opacity: edgeOpacity,
+                            transition: 'opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
                         />
                       )}
-                      {index === 5 && showEdgeOpacity && (
+                      
+                      {/* Gradient overlay for right edge item */}
+                      {index === 5 && (
                         <div 
-                          className="absolute inset-0 rounded-lg pointer-events-none transition-opacity duration-800 ease-in-out z-10"
+                          className="absolute inset-0 rounded-lg pointer-events-none z-10"
                           style={{ 
                             background: 'linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 180%)',
-                            opacity: 1
+                            opacity: edgeOpacity,
+                            transition: 'opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
                         />
                       )}
@@ -198,14 +254,22 @@ export default function GlassesShowcase() {
             onClick={() => {
               if (!isAnimating) {
                 setIsAnimating(true);
-                setShowEdgeOpacity(false);
+                
+                // Clear any existing opacity animation
+                if (opacityTimerRef.current) {
+                  clearTimeout(opacityTimerRef.current);
+                }
+                
+                // First make edge items fully visible
+                setEdgeOpacity(0);
+                
+                // Change page
                 setCurrentPage(i);
                 
-                requestAnimationFrame(() => {
-                  setTimeout(() => {
-                    setShowEdgeOpacity(true);
-                  }, 300);
-                });
+                // After position transition completes, fade edge items
+                opacityTimerRef.current = setTimeout(() => {
+                  animateOpacityTo(1);
+                }, 400);
               }
             }}
             aria-label={`Page ${i+1}`}
