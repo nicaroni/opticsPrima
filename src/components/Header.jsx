@@ -68,9 +68,6 @@ function Header({ scrollToSection }) {
             </li>
           </ul>
         </nav>
-        
-        {/* Mobile menu button */}
-        {/* ...existing code... */}
       </div>
     </header>
   );
