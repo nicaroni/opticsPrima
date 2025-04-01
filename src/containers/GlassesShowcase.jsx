@@ -157,8 +157,8 @@ export default function GlassesShowcase() {
   const allPageItems = getAllPageItems();
 
   return (
-    <div className="w-full py-10 px-4 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold mb-12 text-gray-700 text-center">
+    <div className="w-full py-2 px-4 max-w-7xl mx-auto">
+      <h2 className="text-3xl font-bold mb-5 text-gray-700 text-center">
         Нашата колекция
       </h2>
       
@@ -174,7 +174,7 @@ export default function GlassesShowcase() {
         </button>
 
         {/* Carousel container */}
-        <div className="overflow-hidden mx-auto w-full max-w-5xl py-2">
+        <div className="overflow-hidden mx-auto w-full max-w-5xl py-1">
           {/* Sliding container */}
           <div 
             className="flex transition-transform duration-700 ease-in-out"

@@ -54,6 +54,7 @@
 /* ---------------------- */
 
 
+
 .brand-slider-wrapper {
   width: 100%;
   overflow: hidden;
@@ -99,3 +100,51 @@
 
   /* for BrandSlider effects */
   /* ------------------------- */
+
+/************** ReviewCard *****************/
+/* *****************************************/
+
+ 
+.review-card {
+    opacity: 0;
+    transform-origin: center;
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* Add this to ensure smooth transition even before hover */
+    transform: translateY(20px) rotate(var(--rotation, 0deg)) translateX(var(--offset-x, 0));
+  }
+  
+  .review-card.revealed {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--rotation, 0deg)) translateX(var(--offset-x, 0));
+    /* Add this transition for ALL properties to ensure smoothness */
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  
+  /* Replace the existing float animation with this smoother version */
+  @keyframes gentle-float {
+    0% {
+      transform: translateY(0) rotate(var(--rotation, 0deg)) translateX(var(--offset-x, 0));
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+      transform: translateY(-8px) rotate(var(--rotation, 0deg)) translateX(var(--offset-x, 0));
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+    }
+    100% {
+      transform: translateY(0) rotate(var(--rotation, 0deg)) translateX(var(--offset-x, 0));
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  /* Apply a smooth transition before starting animation */
+  .review-card.revealed {
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  }
+  
+  /* Make hover smoother with a longer animation duration */
+  .review-card.revealed:hover {
+    animation: gentle-float 4s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  }
+
+  /************** ReviewCard ***************/
+/* *****************************************/

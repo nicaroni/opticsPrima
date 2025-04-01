@@ -5,8 +5,9 @@ import CustomSlideshow from './CustomSlideshow';
 import BrandSlider from './components/BrandSlider';
 import { StarIcon } from '@heroicons/react/24/solid';  // Updated import
 import './assets/styles/stars.css';  // Import the CSS file
-import GlassesShowcase from './components/GlassesShowcase';
+import GlassesShowcase from './containers/GlassesShowcase';
 import './assets/styles/animation.css';
+import TestimonialsSection from './containers/TestimonialsSection';
 
 function App() {
   const [isScrolling, setIsScrolling] = useState(false);
@@ -104,7 +105,7 @@ function App() {
   return (
     <div className="font-sans text-gray-900">
       {/* Header / Nav */}
-      <Header scrollToSection={scrollToSection} />
+      <Header  scrollToSection={scrollToSection} />
 
       <>
         <CustomSlideshow />
@@ -157,8 +158,8 @@ function App() {
         </div>
       </section>
 
-      <section className="new-pairs-glasses min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12
-                          flex flex-col items-center justify-center px-4 text-center"
+      <section className="bg-gradient-to-br from-gray-50 to-gray-100 py-6
+                    flex flex-col items-center justify-center px-4 text-center"
               id="collection">
         <GlassesShowcase />
       </section>
@@ -184,29 +185,13 @@ function App() {
       </section>
 
       {/* Testimonials */}
-      <section
-        className="min-h-screen flex flex-col justify-center items-center text-center px-6 py-12 max-w-7xl mx-auto"
-      >
-        <h1 className="text-4xl font-bold mb-4 text-gray-600">
-          Отзиви от клиенти
-        </h1>
-        <h1 className="text-xl font-bold mb-4 text-gray-600">
-          Мария Стоянова
-        </h1>
-        <p className="text-xl mb-6 max-w-xl text-gray-600">
-          „Прегледът беше супер детайлен, а очилата – точно по мярка! 
-          Не мислех, че ще е толкова лесно да изглеждам и да виждам толкова добре. 
-          Препоръчвам с две ръце!“
-        </p>
-        <div className="flex gap-2 my-4">
-          {[...Array(5)].map((_, i) => (
-            <StarIcon
-              key={i}
-              className={`w-8 h-8 text-yellow-400 sparkle-star ${i > 0 ? `delay-${i*100}` : ''}`}
-            />
-          ))}
-        </div>
-      </section>
+    <section>
+    <TestimonialsSection />
+
+    </section>
+      
+      
+    
     </div>
   );
 }
