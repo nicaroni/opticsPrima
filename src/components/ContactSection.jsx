@@ -91,10 +91,10 @@ export default function ContactSection() {
                   <iframe
                     title="Google Map for Tsarevo"
                     className="w-full h-[180px] overflow-hidden rounded-xl shadow-md"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2957.083560596097!2d27.84591437638717!3d42.16989414709415!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40a12ebc94073389%3A0xde813f3623eef90b!2sTsentar%2C%20ul.%20%22Han%20Asparuh%22%2039%2C%208260%20Tsarevo!5e0!3m2!1sen!2sbg!4v1743339411617!5m2!1sen!2sbg"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11828.340683777233!2d27.8482969!3d42.1698597!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40a12ebdbb28ee55%3A0xb244f6aa374b49fb!2sPrima!5e0!3m2!1sen!2sbg!4v1743573468582!5m2!1sen!2sbg"
                   />
                   {/* Arrow */}
-                  <div className="absolute right-[-32px] top-1/2 -translate-y-1/2 bg-gray-700 text-white p-2 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 pointer-events-none">
+                  <div className="absolute right-[-50px] top-1/2 -translate-y-1/2 bg-gray-400 bg-opacity-75 text-white p-2 rounded-md opacity-0 group-hover:opacity-90 transition-all duration-300 z-30 pointer-events-none">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
@@ -120,14 +120,15 @@ export default function ContactSection() {
                       title="Facebook Page"
                     />
                   </div>
-                  {/* Arrow */}
-                  <div className="absolute left-[-32px] top-1/2 -translate-y-1/2 bg-gray-700 text-white p-2 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 pointer-events-none">
+                  {/* Arrow - repositioned to right side since element is right-aligned */}
+                  <div className="absolute right-[-70px] top-1/2 -translate-y-1/2 bg-gray-300 bg-opacity-60 text-white p-2 rounded-md opacity-0 group-hover:opacity-90 transition-all duration-300 z-50 pointer-events-none">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                   </div>
                 </div>
               </div>
+
             </div>
 
             {/* Viber contact */}
@@ -150,7 +151,7 @@ export default function ContactSection() {
                   <span className="text-sm font-semibold">+359889962200</span>
                 </a>
                 {/* Arrow */}
-                <div className="absolute right-[-32px] top-1/2 -translate-y-1/2 bg-gray-700 text-white p-2 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 pointer-events-none">
+                <div className="absolute right-[-50px] top-1/2 -translate-y-1/2 bg-gray-400 bg-opacity-75 text-white p-2 rounded-md opacity-0 group-hover:opacity-90 transition-all duration-300 z-30 pointer-events-none">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
