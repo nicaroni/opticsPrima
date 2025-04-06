@@ -20,3 +20,11 @@ If you are developing a production application, we recommend using TypeScript an
 /***/      clickable slideshow brands line
 /***/      create svg logo
 /***/      favicon == logo
+
+//         react test for functionallity
+//         solid understand of how the project works
+//         in header нашия екип
+//         in customSlideshow our (1 our optometrist)
+//         in our heroSection place for leli and what she does
+//         in our heroSection our glasses what kind of lens we use
+//         in heroSection place for aparateur

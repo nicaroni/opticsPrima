@@ -50,6 +50,49 @@
   transform: translateX(-50px);
 }
 
+/* Add these animations for the inside-out effect */
+
+/* Base class for all scroll reveal animations */
+.scroll-reveal {
+  opacity: 0;
+  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+}
+
+/* Elements moving from center to left */
+.animate-from-center-left {
+  transform: translateX(30px);
+}
+
+.animate-from-center-left.revealed {
+  transform: translateX(0);
+}
+
+/* Elements moving from center to right */
+.animate-from-center-right {
+  transform: translateX(-30px);
+}
+
+.animate-from-center-right.revealed {
+  transform: translateX(0);
+}
+
+/* For mobile, keep the animations subtle */
+@media (max-width: 768px) {
+  .animate-from-center-left,
+  .animate-from-center-right {
+    transform: translateY(15px);
+  }
+  
+  .animate-from-center-left.revealed,
+  .animate-from-center-right.revealed {
+    transform: translateY(0);
+  }
+}
+
 /* for BrandSlider effects */
 /* ---------------------- */
 
@@ -146,5 +189,18 @@
     animation: gentle-float 4s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
   }
 
+.privacy-reveal {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.privacy-reveal.revealed,
+.privacy-reveal:not(.revealed) {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
   /************** ReviewCard ***************/
 /* *****************************************/
+

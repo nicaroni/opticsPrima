@@ -52,7 +52,7 @@ function Header({ scrollToSection }) {
             </li>
             <li>
               <button 
-                onClick={() => scrollToSection('eye-exams')}
+                onClick={() => scrollToSection('testimonials')}
                 className=" text-gray-600 hover:text-teal-600"
               >
                 Отзиви

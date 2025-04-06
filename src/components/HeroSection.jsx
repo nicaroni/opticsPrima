@@ -1,13 +1,6 @@
-// src/components/HeroSection.jsx
-
+// HeroSection.jsx
 import React from 'react';
 
-/**
- * Reusable Hero-like section (background, text, image).
- * `id` lets you anchor with scrollToSection.
- * `title`, `text`, `imageSrc`, etc. can be passed in
- * `reverse` (optional) = text on the right, image on the left
- */
 export default function HeroSection({
   id,
   title,
@@ -17,36 +10,100 @@ export default function HeroSection({
   textColor = 'text-gray-600',
   ...props
 }) {
+  const formatText = (fullText) => {
+    // Split on all custom patterns: [[...]], {{...}}, [*...*]
+    const tokens = fullText.split(/(\[\[[\s\S]*?\]\]|\{\{[\s\S]*?\}\}|\[\*[\s\S]*?\*\])/g);
+
+    return (
+      <div className="text-left">
+        {tokens.map((token, i) => {
+          // Bold black: [* ... *]
+          if (/^\[\*[\s\S]*?\*\]$/.test(token)) {
+            const content = token.slice(2, -2).trim();
+            return (
+              <span key={i} className="font-bold text-teal-600 block text-left underline decoration-2 underline-offset-5">
+                {content}
+              </span>
+            );
+          }
+
+          // Bold teal: [[ ... ]]
+          if (/^\[\[[\s\S]*?\]\]$/.test(token)) {
+            const content = token.slice(2, -2).trim();
+            return (
+              <span key={i} className="font-bold text-teal-600">
+                {content}
+              </span>
+            );
+          }
+
+          // Italic: {{ ... }}
+          if (/^\{\{[\s\S]*?\}\}$/.test(token)) {
+            const content = token.slice(2, -2).trim();
+            return (
+              <em key={i} className="italic">
+                {content}
+              </em>
+            );
+          }
+
+          // Handle line breaks in normal text
+          const lines = token.split('\n');
+          return lines.map((line, lineIndex) => (
+            <React.Fragment key={`${i}-${lineIndex}`}>
+              {line}
+              {lineIndex < lines.length - 1 && <br />}
+            </React.Fragment>
+          ));
+        })}
+      </div>
+    );
+  };
+
   return (
     <section
       id={id}
-      className="min-h-screen bg-cover bg-center 
-                 flex flex-row items-center justify-center text-white px-4 text-center"
+      className="py-18 min-h-screen bg-cover bg-center flex flex-col items-center justify-center px-4"
       {...props}
     >
-      {/* If reverse=true, show image first */}
-      {reverse && imageSrc && (
-        <img
-          src={imageSrc}
-          alt="hero"
-          className="rounded-xl shadow-lg w-[400px] sm:w-[500px] lg:w-[600px] max-w-xl object-cover scroll-reveal scroll-reveal-up"
-        />
-      )}
+      {reverse ? (
+        <div className="container mx-auto flex flex-col md:flex-row-reverse items-center justify-between">
+          <div className="section-image w-full md:w-1/2 mb-8 md:mb-0 md:pl-8">
+            {imageSrc && (
+              <img
+                src={imageSrc}
+                alt={title}
+                className="rounded-xl shadow-lg w-full max-w-xl mx-auto object-cover scroll-reveal animate-from-center-right"
+              />
+            )}
+          </div>
 
-      <div className="section-text m-8 scroll-reveal scroll-reveal-right">
-        <h1 className={`text-4xl font-bold mb-4 ${textColor}`}>{title}</h1>
-        <p className={`text-xl mb-6 max-w-xl ${textColor}`}>
-          {text}
-        </p>
-      </div>
+          <div className="section-text w-full md:w-1/2 scroll-reveal animate-from-center-left">
+            <h2 className={`text-3xl font-bold mb-4 ${textColor} text-center`}>{title}</h2>
+            <div className={`text-lg mb-6 max-w-xl mx-auto ${textColor}`}>
+              {formatText(text)}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
+          <div className="section-image w-full md:w-1/2 mb-8 md:mb-0 md:pr-8">
+            {imageSrc && (
+              <img
+                src={imageSrc}
+                alt={title}
+                className="rounded-xl shadow-lg w-full max-w-xl mx-auto object-cover scroll-reveal animate-from-center-left"
+              />
+            )}
+          </div>
 
-      {/* If reverse=false, show image second */}
-      {!reverse && imageSrc && (
-        <img
-          src={imageSrc}
-          alt="hero"
-          className="rounded-xl shadow-lg w-[200px] sm:w-[250px] lg:w-[300px] max-w-xs object-cover scroll-reveal scroll-reveal-up"
-        />
+          <div className="section-text w-full md:w-1/2 scroll-reveal animate-from-center-right">
+            <h2 className={`text-3xl font-bold mb-4 ${textColor} text-center`}>{title}</h2>
+            <div className={`text-lg mb-6 max-w-xl mx-auto ${textColor}`}>
+              {formatText(text)}
+            </div>
+          </div>
+        </div>
       )}
     </section>
   );

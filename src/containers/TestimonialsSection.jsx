@@ -24,14 +24,18 @@ const testimonials = [
   {
     id: 4,
     name: 'Димитър Колев',
-    review: 'Качеството на обслужване и продуктите е на изключително високо ниво...',
+    review: 'Качеството на обслужване и продуктите са на изключително високо ниво...',
     rating: 5,
   },
 ];
 
-export default function TestimonialsSection() {
+export default function TestimonialsSection({id}) {
   return (
-    <section className="min-h-screen flex flex-col justify-center items-center py-16 px-4 relative overflow-hidden">
+    
+    <section
+    id={id}
+    className="min-h-screen flex flex-col justify-center items-center py-16 px-4 relative overflow-hidden" 
+    >
       <div className="max-w-6xl w-full mx-auto z-10">
         <h2 className="text-4xl font-bold mb-12 text-gray-600 text-center">
           Отзиви от клиенти

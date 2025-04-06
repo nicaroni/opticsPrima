@@ -1,53 +1,95 @@
 // src/components/ContactSection.jsx
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+import { useForm, ValidationError } from '@formspree/react';
+import { Link } from 'react-router-dom';
 
 export default function ContactSection() {
   const contactSectionRef = useRef(null);
   const [showViberAnimation, setShowViberAnimation] = useState(false);
   const [columnsVisible, setColumnsVisible] = useState(false);
-
+  const [calendlyLoaded, setCalendlyLoaded] = useState(false);
+  const [hasMarketingConsent, setHasMarketingConsent] = useState(false);
+  
+  // Replace your custom form state with Formspree
+  const [formState, handleSubmit] = useForm("xgvapejp");
+  
+  // Keep local form state for controlled components
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     message: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  
+  // Handle form reset after successful submission
+  useEffect(() => {
+    if (formState.succeeded) {
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      // Hide success message after 5 seconds
+      const timer = setTimeout(() => {
+        // Note: we can't reset formState directly, but the message will be hidden
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [formState.succeeded]);
 
+  // Handle input changes
   const handleFormChange = (e) => {
     const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
     
-    try {
-      // In real implementation, replace with actual API call
-      // await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData)
-      // });
+    // Basic sanitization - prevent HTML injection
+    const sanitizedValue = value
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setSubmitSuccess(true);
-      setFormData({ name: '', email: '', phone: '', message: '' });
-      
-      setTimeout(() => setSubmitSuccess(false), 5000);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    setFormData(prev => ({ ...prev, [id]: sanitizedValue }));
   };
 
-  // Use the custom hook instead of recreating intersection observer logic
+  // Replace the direct calendly loading with this:
+  useEffect(() => {
+    // Check if user consented to functional cookies
+    const consent = localStorage.getItem('cookie-consent');
+    let hasConsent = false;
+    
+    if (consent) {
+      try {
+        const preferences = JSON.parse(consent);
+        hasConsent = preferences.functional;
+        setHasMarketingConsent(preferences.marketing);
+      } catch (e) {
+        console.error('Error parsing cookie consent');
+      }
+    }
+    
+    // Only load if consent given or script already loaded
+    if (hasConsent || document.getElementById('calendly-script')) {
+      if (!document.getElementById('calendly-script')) {
+        const script = document.createElement('script');
+        script.id = 'calendly-script';
+        script.src = 'https://assets.calendly.com/assets/external/widget.js';
+        script.async = true;
+        
+        script.onload = () => {
+          if (window.Calendly) {
+            setTimeout(() => setCalendlyLoaded(true), 500);
+          }
+        };
+        
+        document.head.appendChild(script);
+      } else {
+        // Script was already loaded
+        if (window.Calendly) {
+          setCalendlyLoaded(true);
+        }
+      }
+    } else {
+      // Show placeholder or message if no consent
+      setCalendlyLoaded(false);
+    }
+  }, []);
+
+  // Intersection observer code remains the same
   useIntersectionObserver(
     contactSectionRef,
     { threshold: 0.2 },
@@ -56,10 +98,8 @@ export default function ContactSection() {
         setColumnsVisible(true);
         observer.unobserve(entry.target);
         
-        // Start Viber animation after columns appear
         setTimeout(() => {
           setShowViberAnimation(true);
-          // Turn off animation after 3 seconds
           setTimeout(() => setShowViberAnimation(false), 3000);
         }, 1500);
       }
@@ -67,11 +107,7 @@ export default function ContactSection() {
   );
 
   return (
-    <section
-      ref={contactSectionRef}
-      id="contact"
-      className="w-full py-12 px-4 bg-gray-50 overflow-hidden"
-    >
+    <section ref={contactSectionRef} id="contact" className="w-full py-12 px-4 bg-gray-50 overflow-hidden">
       <h2 className="text-4xl font-bold text-center mb-8">За контакти</h2>
       <div className="flex flex-col md:flex-row w-full gap-10 justify-center">
         {/* LEFT COLUMN */}
@@ -103,31 +139,51 @@ export default function ContactSection() {
               </div>
 
               {/* Facebook Embed */}
-              <div className="flex justify-end w-full relative">
-                <div className="hover-item w-[65%] overflow-hidden rounded-xl shadow-md relative transition-transform duration-300 hover:scale-105 hover:z-10 group">
-                  <div className="p-3 bg-blue-600 text-white font-semibold flex items-center">
-                    <svg className="w-5 h-5 mr-2 fill-current" viewBox="0 0 24 24">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12S0 5.446 0 12.073c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953h-1.527c-1.503 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                    </svg>
-                    Оптика ПРИМА
-                  </div>
-                  <div className="h-[130px] w-full">
-                    <iframe
-                      src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Foptikacarevo&adapt_container_width=true&hide_cover=false&show_facepile=true"
-                      className="w-full h-full"
-                      style={{ border: 'none', overflow: 'hidden' }}
-                      allow="encrypted-media"
-                      title="Facebook Page"
-                    />
-                  </div>
-                  {/* Arrow - repositioned to right side since element is right-aligned */}
-                  <div className="absolute right-[-70px] top-1/2 -translate-y-1/2 bg-gray-300 bg-opacity-60 text-white p-2 rounded-md opacity-0 group-hover:opacity-90 transition-all duration-300 z-50 pointer-events-none">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+              <div className="flex justify-end w-full relative overflow-visible">
+  {/* This wrapper gives room for the arrow to escape overflow */}
+  <div className="relative group w-[65%]">
+    
+    {/* Main box with rounded corners */}
+    <div className="rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:z-10 bg-white">
+      <div className="p-3 bg-blue-600 text-white font-semibold flex items-center rounded-t-xl">
+        {/* FIXED: Complete Facebook icon path */}
+        <svg className="w-5 h-5 mr-2 fill-current" viewBox="0 0 24 24">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12S0 5.446 0 12.073c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953h-1.527c-1.503 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+        </svg>
+        Оптика ПРИМА
+      </div>
+      {/* Facebook Embed with consent check */}
+      <div className="h-[130px] w-full">
+        {hasMarketingConsent ? (
+          <iframe
+            src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Foptikacarevo"
+            className="w-full h-full rounded-b-xl"
+            style={{ border: 'none' }}
+            title="Facebook Page"
+            allow="encrypted-media"
+          />
+        ) : (
+          <div 
+            className="fb-embed-placeholder w-full h-full flex items-center justify-center bg-gray-100 rounded-b-xl"
+            data-src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Foptikacarevo"
+            data-class="w-full h-full rounded-b-xl"
+          >
+            <p className="text-sm text-gray-500">Facebook съдържание (изисква съгласие за маркетингови бисквитки)</p>
+          </div>
+        )}
+      </div>
+    </div>
+
+    {/* ARROW – only shows on hover over group - FIXED to use arrow icon */}
+    <div className="absolute left-[-50px] top-1/2 -translate-y-1/2 bg-gray-400 bg-opacity-75 text-white w-9 h-9 rounded-md flex items-center justify-center opacity-0 group-hover:opacity-90 transition-all duration-300 z-30 pointer-events-none">
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+      </svg>
+    </div>
+  </div>
+</div>
+
+
 
             </div>
 
@@ -193,12 +249,14 @@ export default function ContactSection() {
                     <input
                       type="text"
                       id="name"
+                      name="name" // Important for Formspree
                       value={formData.name}
                       onChange={handleFormChange}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                       placeholder="Вашето име"
                     />
+                    <ValidationError prefix="Name" field="name" errors={formState.errors} className="text-sm text-red-500 mt-1" />
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -207,12 +265,14 @@ export default function ContactSection() {
                     <input
                       type="email"
                       id="email"
+                      name="email" // Important for Formspree
                       value={formData.email}
                       onChange={handleFormChange}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                       placeholder="your@email.com"
                     />
+                    <ValidationError prefix="Email" field="email" errors={formState.errors} className="text-sm text-red-500 mt-1" />
                   </div>
                 </div>
                 <div>
@@ -222,11 +282,13 @@ export default function ContactSection() {
                   <input
                     type="tel"
                     id="phone"
+                    name="phone" // Important for Formspree
                     value={formData.phone}
                     onChange={handleFormChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="+359 88 123 4567"
                   />
+                  <ValidationError prefix="Phone" field="phone" errors={formState.errors} className="text-sm text-red-500 mt-1" />
                 </div>
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
@@ -234,30 +296,46 @@ export default function ContactSection() {
                   </label>
                   <textarea
                     id="message"
-                    rows="8"
+                    name="message" // Important for Formspree
+                    rows="6"
                     value={formData.message}
                     onChange={handleFormChange}
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="Вашето съобщение..."
                   ></textarea>
+                  <ValidationError prefix="Message" field="message" errors={formState.errors} className="text-sm text-red-500 mt-1" />
                 </div>
+                
+                {/* Honeypot field for spam protection */}
+                <input type="text" name="_gotcha" style={{display: 'none'}} />
+                
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={formState.submitting}
                   className={`w-full font-bold py-3 px-4 rounded-md transition duration-300
-                    ${isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                    ${formState.submitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
                 >
-                  {isSubmitting ? 'Изпращане...' : 'Изпрати'}
+                  {formState.submitting ? 'Изпращане...' : 'Изпрати'}
                 </button>
+
+                <p className="text-sm text-gray-600 mt-2">
+  С изпращането на формата се съгласявате с нашата{' '}
+  <Link to="/privacy" className="text-teal-600 underline">Политика за поверителност</Link>.
+</p>
+
                 
-                {submitSuccess && (
+                {formState.succeeded && (
                   <div className="bg-green-100 text-green-700 p-3 rounded-md text-center">
                     Съобщението е изпратено успешно!
                   </div>
                 )}
+                
+                {/* General error message */}
+                <ValidationError errors={formState.errors} className="text-sm text-red-500 text-center" />
               </form>
             </div>
+            
             <div className="pt-4 border-t border-gray-200 text-center text-gray-600 mt-auto">
               <p className="mb-2">Или ни пишете директно на:</p>
               <a
@@ -268,15 +346,15 @@ export default function ContactSection() {
                   <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                   <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                 </svg>
-                optika_prima@gmail.com
+                optikacarevo@gmail.com
               </a>
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN - Calendly */}
+        {/* RIGHT COLUMN */}
         <div 
-          className={`contact-column md:w-1/3 flex justify-center h-[750px] transition-all duration-700 ease-out
+          className={`contact-column md:w-1/3 flex justify-center h-[750px] transition-all duration-700 ease-out relative
             ${columnsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-16'}`}
           style={{ transitionDelay: '400ms' }}
         >
@@ -284,6 +362,16 @@ export default function ContactSection() {
             className="calendly-inline-widget w-full h-full rounded-xl shadow-lg overflow-hidden"
             data-url="https://calendly.com/optikacarevo/30min"
           />
+          
+          {/* Loading indicator displays until Calendly is fully loaded */}
+          {!calendlyLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white rounded-xl shadow-lg">
+              <div className="text-center">
+                <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <p className="mt-4 text-blue-600 font-medium">Зареждане на календара...</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

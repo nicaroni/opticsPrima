@@ -2,9 +2,12 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import AnimatedSlide from './slides/AnimatedSlide';
-import slidesData from './slides/slidesData';
+import createSlidesData from './slides/slidesData';
 
-export default function CustomSlideshow() {
+export default function CustomSlideshow({ scrollToSection }) {
+  // Create slides with the navigation function
+  const slidesData = createSlidesData(scrollToSection);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);

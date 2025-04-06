@@ -8,6 +8,7 @@ dist/
 .env
 .env.*.local
 
+
 # local development
 .vite/
 *.local
