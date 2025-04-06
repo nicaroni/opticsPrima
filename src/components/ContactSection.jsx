@@ -10,6 +10,7 @@ export default function ContactSection() {
   const [columnsVisible, setColumnsVisible] = useState(false);
   const [calendlyLoaded, setCalendlyLoaded] = useState(false);
   const [hasMarketingConsent, setHasMarketingConsent] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
   
   // Replace your custom form state with Formspree
   const [formState, handleSubmit] = useForm("xgvapejp");
@@ -105,6 +106,101 @@ export default function ContactSection() {
       }
     }
   );
+
+  // Add this for reCAPTCHA
+  const recaptchaRef = useRef(null);
+  
+  // Safe approach for your ContactSection.jsx
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
+useEffect(() => {
+  const loadRecaptcha = () => {
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
+    script.async = true;
+    document.body.appendChild(script);
+  };
+  
+  loadRecaptcha();
+}, []);
+  
+  // Add proper validation to your form
+  const validateForm = () => {
+    const errors = {};
+    
+    // Name validation
+    if (formData.name.trim().length < 2) {
+      errors.name = "Името трябва да е поне 2 символа";
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      errors.email = "Невалиден имейл адрес";
+    }
+    
+    // Message validation
+    if (formData.message.trim().length < 10) {
+      errors.message = "Съобщението трябва да е поне 10 символа";
+    }
+    
+    return errors;
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validate form first
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      // Show errors
+      setValidationErrors(errors);
+      return;
+    }
+    
+    // Add form submission time check
+    const minTimeSeconds = 3;
+    const formOpenTime = window.sessionStorage.getItem('form-open-time') || Date.now();
+    const timeElapsed = (Date.now() - formOpenTime) / 1000;
+    
+    // If form is submitted too quickly, likely a bot
+    if (timeElapsed < minTimeSeconds) {
+      console.log("Form submitted too quickly, likely automated");
+      // Show fake success but don't actually submit
+      setFormState({...formState, succeeded: true});
+      return;
+    }
+    
+    // Execute reCAPTCHA - USE THE VARIABLE HERE INSTEAD OF HARDCODED KEY
+    try {
+      if (window.grecaptcha) {
+        const token = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'submit'});
+        
+        // Add the token to your form data
+        const formWithRecaptcha = new FormData(e.target);
+        formWithRecaptcha.append('g-recaptcha-response', token);
+        
+        // Submit to Formspree with the token
+        handleSubmit({
+          ...e,
+          formData: formWithRecaptcha,
+          preventDefault: () => {}, // Required because we already called preventDefault
+        });
+      } else {
+        console.warn("reCAPTCHA not loaded, falling back to standard submission");
+        handleSubmit(e);
+      }
+    } catch (error) {
+      console.error('reCAPTCHA error:', error);
+      // Fallback to normal submission
+      handleSubmit(e);
+    }
+  };
+
+  useEffect(() => {
+    // Set the form open time when component mounts
+    window.sessionStorage.setItem('form-open-time', Date.now());
+  }, []);
 
   return (
     <section ref={contactSectionRef} id="contact" className="w-full py-12 px-4 bg-gray-50 overflow-hidden">
@@ -240,7 +336,7 @@ export default function ContactSection() {
           <div className="bg-white rounded-xl shadow-lg overflow-hidden w-full p-8 h-full flex flex-col justify-between">
             <div>
               <h3 className="text-2xl font-bold mb-5 text-center">Изпратете ни съобщение</h3>
-              <form className="space-y-4" onSubmit={handleSubmit}>
+              <form className="space-y-4" onSubmit={handleFormSubmit}>
                 <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -257,6 +353,7 @@ export default function ContactSection() {
                       placeholder="Вашето име"
                     />
                     <ValidationError prefix="Name" field="name" errors={formState.errors} className="text-sm text-red-500 mt-1" />
+                    {validationErrors.name && <p className="text-sm text-red-500 mt-1">{validationErrors.name}</p>}
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -273,6 +370,7 @@ export default function ContactSection() {
                       placeholder="your@email.com"
                     />
                     <ValidationError prefix="Email" field="email" errors={formState.errors} className="text-sm text-red-500 mt-1" />
+                    {validationErrors.email && <p className="text-sm text-red-500 mt-1">{validationErrors.email}</p>}
                   </div>
                 </div>
                 <div>
@@ -305,10 +403,15 @@ export default function ContactSection() {
                     placeholder="Вашето съобщение..."
                   ></textarea>
                   <ValidationError prefix="Message" field="message" errors={formState.errors} className="text-sm text-red-500 mt-1" />
+                  {validationErrors.message && <p className="text-sm text-red-500 mt-1">{validationErrors.message}</p>}
                 </div>
                 
-                {/* Honeypot field for spam protection */}
-                <input type="text" name="_gotcha" style={{display: 'none'}} />
+                {/* Honeypot fields for spam protection */}
+                <div style={{opacity: 0, position: 'absolute', top: 0, left: 0, height: 0, width: 0, zIndex: -1}}>
+                  <input type="text" name="_gotcha" tabIndex="-1" />
+                  <input type="email" name="email_confirm" tabIndex="-1" />
+                  <input type="text" name="name_confirm" tabIndex="-1" />
+                </div>
                 
                 <button
                   type="submit"
