@@ -218,16 +218,18 @@ export default function ContactSection() {
             <div className="relative flex-grow">
               {/* Replace with your actual Google Form URL */}
 
-              <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdy_NoLLl1pc0W6VbT5jsulexDIHeykcX8e7nLPS6H3-6khsg/viewform?embedded=true" 
+              <iframe 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSdy_NoLLl1pc0W6VbT5jsulexDIHeykcX8e7nLPS6H3-6khsg/viewform?embedded=true" 
                 width="100%" 
                 height="650" 
-                frameborder="0" 
-                marginheight="0" 
-                marginwidth="0"
+                frameBorder="0"  // Changed from frameborder
+                marginHeight="0" // Changed from marginheight
+                marginWidth="0"  // Changed from marginwidth
                 title="Contact Form"
                 className="absolute inset-0"
-                onLoad={() => setFormLoaded(true)}>
-                  Зареждане…
+                onLoad={() => setFormLoaded(true)}
+              >
+                Зареждане…
               </iframe>
             
               

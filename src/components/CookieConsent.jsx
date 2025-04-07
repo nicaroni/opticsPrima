@@ -5,10 +5,9 @@ export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
   const [expanded, setExpanded] = useState(false);
   
-  // Cookie consent preferences
+  // Cookie consent preferences - removed analytics
   const [preferences, setPreferences] = useState({
     necessary: true, // Always required
-    analytics: false,
     marketing: false,
     functional: false
   });
@@ -23,8 +22,25 @@ export default function CookieConsent() {
         setVisible(true);
       } else {
         try {
-          // Parse saved preferences
+          // Parse saved preferences AND verify it's valid
           const savedPreferences = JSON.parse(savedConsent);
+          
+          // Remove any analytics references from saved preferences
+          if ('analytics' in savedPreferences) {
+            delete savedPreferences.analytics;
+            // Save the updated preferences back
+            localStorage.setItem('cookie-consent', JSON.stringify(savedPreferences));
+          }
+          
+          // Check if it has the expected structure
+          if (!savedPreferences || typeof savedPreferences !== 'object' || 
+              !('necessary' in savedPreferences)) {
+            // Invalid data structure, show banner
+            localStorage.removeItem('cookie-consent');
+            setVisible(true);
+            return;
+          }
+          
           setPreferences(prev => ({
             ...prev,
             ...savedPreferences
@@ -34,6 +50,7 @@ export default function CookieConsent() {
           applyConsentSettings(savedPreferences);
         } catch (e) {
           console.error('Error parsing saved cookie consent');
+          localStorage.removeItem('cookie-consent');
           setVisible(true);
         }
       }
@@ -53,7 +70,6 @@ export default function CookieConsent() {
   const acceptAll = () => {
     const allAccepted = {
       necessary: true,
-      analytics: true,
       marketing: true,
       functional: true
     };
@@ -70,7 +86,6 @@ export default function CookieConsent() {
   const acceptNecessary = () => {
     const necessaryOnly = {
       necessary: true,
-      analytics: false,
       marketing: false,
       functional: false
     };
@@ -98,10 +113,7 @@ export default function CookieConsent() {
     }
   }, [visible]);
 
-  if (!visible) {
-    console.log("Cookie consent banner is currently hidden");
-    return null;
-  }
+ 
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[9999] bg-white shadow-lg p-4 border-t-2 border-teal-600">
@@ -129,19 +141,6 @@ export default function CookieConsent() {
                   />
                   <label htmlFor="necessary" className="text-sm">
                     <span className="font-medium">Необходими</span> - Задължителни за функционирането на сайта
-                  </label>
-                </div>
-                
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="analytics"
-                    checked={preferences.analytics}
-                    onChange={() => handlePreferenceChange('analytics')}
-                    className="mr-2"
-                  />
-                  <label htmlFor="analytics" className="text-sm">
-                    <span className="font-medium">Аналитични</span> - Помагат ни да разберем как използвате сайта
                   </label>
                 </div>
                 
@@ -204,16 +203,7 @@ export default function CookieConsent() {
 
 // Helper function to apply consent settings to third-party scripts
 function applyConsentSettings(preferences) {
-  console.log('Applying consent settings:', preferences);
-  
-  // Google Analytics
-  if (preferences.analytics) {
-    loadScript('https://www.googletagmanager.com/gtag/js?id=YOUR_GA_ID', 'google-analytics');
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'YOUR_GA_ID', { 'anonymize_ip': true });
-  }
+
   
   // Facebook (marketing)
   if (preferences.marketing) {
@@ -252,12 +242,28 @@ function applyConsentSettings(preferences) {
 
 // Helper function to load scripts dynamically
 function loadScript(src, id) {
-  // Check if script already exists
-  if (document.getElementById(id)) return;
-  
-  const script = document.createElement('script');
-  script.id = id;
-  script.src = src;
-  script.async = true;
-  document.head.appendChild(script);
+  return new Promise((resolve, reject) => {
+    // Check if script already exists
+    if (document.getElementById(id)) {
+      resolve();
+      return;
+    }
+    
+    try {
+      const script = document.createElement('script');
+      script.id = id;
+      script.src = src;
+      script.async = true;
+      script.onerror = (e) => {
+        console.warn(`Failed to load script: ${src}`);
+        // Don't reject to avoid breaking other functionality
+        resolve();
+      };
+      script.onload = () => resolve();
+      document.head.appendChild(script);
+    } catch (err) {
+      console.warn('Error loading script:', err);
+      resolve(); // Still resolve to avoid breaking functionality
+    }
+  });
 }
