@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+// Import the function from your file
+import { applyConsentSettings } from './applyConsentSettings';
 
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
@@ -16,43 +18,41 @@ export default function CookieConsent() {
   useEffect(() => {
     // Short timeout to allow page to render first
     setTimeout(() => {
-      const savedConsent = localStorage.getItem('cookie-consent');
-      if (!savedConsent) {
-        // No consent found, show the banner
-        setVisible(true);
-      } else {
-        try {
-          // Parse saved preferences AND verify it's valid
-          const savedPreferences = JSON.parse(savedConsent);
-          
-          // Remove any analytics references from saved preferences
-          if ('analytics' in savedPreferences) {
-            delete savedPreferences.analytics;
-            // Save the updated preferences back
-            localStorage.setItem('cookie-consent', JSON.stringify(savedPreferences));
-          }
-          
-          // Check if it has the expected structure
-          if (!savedPreferences || typeof savedPreferences !== 'object' || 
-              !('necessary' in savedPreferences)) {
-            // Invalid data structure, show banner
+      try {
+        const savedConsent = localStorage.getItem('cookie-consent');
+        if (!savedConsent) {
+          // No consent found, show the banner
+          setVisible(true);
+        } else {
+          try {
+            // Parse saved preferences AND verify it's valid
+            const savedPreferences = JSON.parse(savedConsent);
+            
+            // Check if it has the expected structure
+            if (!savedPreferences || typeof savedPreferences !== 'object' || 
+                !('necessary' in savedPreferences)) {
+              // Invalid data structure, show banner
+              localStorage.removeItem('cookie-consent');
+              setVisible(true);
+              return;
+            }
+            
+            setPreferences(prev => ({
+              ...prev,
+              ...savedPreferences
+            }));
+            
+            // Important: Apply settings on page load for returning visitors
+            applyConsentSettings(savedPreferences);
+          } catch (e) {
+            console.error('Error parsing saved cookie consent');
             localStorage.removeItem('cookie-consent');
             setVisible(true);
-            return;
           }
-          
-          setPreferences(prev => ({
-            ...prev,
-            ...savedPreferences
-          }));
-          
-          // Important: Apply settings on page load for returning visitors
-          applyConsentSettings(savedPreferences);
-        } catch (e) {
-          console.error('Error parsing saved cookie consent');
-          localStorage.removeItem('cookie-consent');
-          setVisible(true);
         }
+      } catch (storageError) {
+        console.error('Error accessing localStorage:', storageError);
+        setVisible(true);
       }
     }, 300); // Small delay for better UX
   }, []);
@@ -68,6 +68,7 @@ export default function CookieConsent() {
   
   // Accept all cookies
   const acceptAll = () => {
+    console.log("Accept all clicked");
     const allAccepted = {
       necessary: true,
       marketing: true,
@@ -75,15 +76,20 @@ export default function CookieConsent() {
     };
     
     setPreferences(allAccepted);
-    localStorage.setItem('cookie-consent', JSON.stringify(allAccepted));
-    setVisible(false);
     
-    // Apply consent settings
+    try {
+      localStorage.setItem('cookie-consent', JSON.stringify(allAccepted));
+    } catch (e) {
+      console.error("Failed to save to localStorage:", e);
+    }
+    
+    setVisible(false);
     applyConsentSettings(allAccepted);
   };
   
   // Accept only necessary cookies
   const acceptNecessary = () => {
+    console.log("Accept necessary clicked");
     const necessaryOnly = {
       necessary: true,
       marketing: false,
@@ -92,6 +98,7 @@ export default function CookieConsent() {
     
     setPreferences(necessaryOnly);
     localStorage.setItem('cookie-consent', JSON.stringify(necessaryOnly));
+    console.log("Setting visible to false");
     setVisible(false);
     
     // Apply consent settings
@@ -113,7 +120,10 @@ export default function CookieConsent() {
     }
   }, [visible]);
 
- 
+  // Make sure this is right before your return statement
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[9999] bg-white shadow-lg p-4 border-t-2 border-teal-600">
@@ -201,69 +211,3 @@ export default function CookieConsent() {
   );
 }
 
-// Helper function to apply consent settings to third-party scripts
-function applyConsentSettings(preferences) {
-
-  
-  // Facebook (marketing)
-  if (preferences.marketing) {
-    // Re-enable Facebook embeds if needed
-    const facebookElements = document.querySelectorAll('.fb-embed-placeholder');
-    facebookElements.forEach(el => {
-      // Replace placeholder with actual Facebook embed
-      const iframe = document.createElement('iframe');
-      iframe.src = el.dataset.src;
-      iframe.className = el.dataset.class;
-      iframe.title = "Facebook Page";
-      iframe.style.border = 'none';
-      iframe.allow = "encrypted-media";
-      el.parentNode.replaceChild(iframe, el);
-    });
-  }
-  
-  // Calendly (functional)
-  if (preferences.functional) {
-    loadScript('https://assets.calendly.com/assets/external/widget.js', 'calendly-script');
-    
-    // Re-initialize Calendly widgets if needed
-    const calendlyElements = document.querySelectorAll('.calendly-inline-widget');
-    if (window.Calendly) {
-      calendlyElements.forEach(el => {
-        const url = el.dataset.url;
-        // Re-initialize Calendly
-        window.Calendly.initInlineWidget({
-          url: url,
-          parentElement: el
-        });
-      });
-    }
-  }
-}
-
-// Helper function to load scripts dynamically
-function loadScript(src, id) {
-  return new Promise((resolve, reject) => {
-    // Check if script already exists
-    if (document.getElementById(id)) {
-      resolve();
-      return;
-    }
-    
-    try {
-      const script = document.createElement('script');
-      script.id = id;
-      script.src = src;
-      script.async = true;
-      script.onerror = (e) => {
-        console.warn(`Failed to load script: ${src}`);
-        // Don't reject to avoid breaking other functionality
-        resolve();
-      };
-      script.onload = () => resolve();
-      document.head.appendChild(script);
-    } catch (err) {
-      console.warn('Error loading script:', err);
-      resolve(); // Still resolve to avoid breaking functionality
-    }
-  });
-}
