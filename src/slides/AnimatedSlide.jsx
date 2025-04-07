@@ -92,7 +92,7 @@ export default function AnimatedSlide({
     <div className="w-full h-screen flex flex-col items-center justify-center bg-gradient-to-br 
                     from-[#fdfbfb] to-[#ebedee] text-white px-6">
       <section className="min-h-screen bg-cover bg-center flex flex-row items-center 
-                         justify-center text-white px-4 gap-6 relative overflow-hidden">
+                         justify-center text-white px-4 gap-6 relative overflow-hidden select-none">
         {/* TEXT BLOCK */}
         {textOnLeft && (
           <div className={textClasses}>

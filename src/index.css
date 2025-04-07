@@ -1,0 +1,74 @@
+/* Add this to your global CSS */
+
+/* Prevent text selection on UI elements */
+.select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Fix for outline on clicked elements */
+a:focus, button:focus, [role="button"]:focus {
+  outline: none;
+}
+
+/* Optional: Hide text cursor on interactive elements */
+.cursor-default {
+  cursor: default;
+}
+
+/* Make address and other non-interactive text non-selectable */
+.contact-column p, 
+.contact-column h3, 
+.contact-column h4 {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Prevent image drag */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Global cursor control */
+html, body {
+  cursor: default;
+}
+
+/* Prevent text selection globally */
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Re-enable text selection only where needed */
+p, h1, h2, h3, h4, h5, h6, span, li {
+  cursor: text;
+}
+
+/* Re-enable text selection for specific content areas */
+.description-text, 
+.privacy-content,
+.terms-content {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* Show pointer cursor on all clickable elements */
+a, button, [role="button"], .clickable, input[type="submit"], 
+label[for], .nav-item, .contact-column a {
+  cursor: pointer !important;
+}
+
+/* Show default cursor on non-interactive elements */

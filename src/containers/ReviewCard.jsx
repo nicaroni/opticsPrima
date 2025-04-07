@@ -26,7 +26,7 @@ export default function ReviewCard({ name, review, rating, index, total }) {
   return (
     <div
       className="bg-white rounded-lg shadow-lg p-6 my-4 max-w-xl mx-auto
-                 scroll-reveal review-card" 
+                 scroll-reveal review-card select-none" 
       style={computeCardStyle()}
     >
       {/* Decor index bubble (optional) */}

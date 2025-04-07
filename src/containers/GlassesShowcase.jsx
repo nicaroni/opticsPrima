@@ -7,23 +7,56 @@ export default function GlassesShowcase() {
   const [currentPage, setCurrentPage] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [edgeOpacity, setEdgeOpacity] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(4); // Default for large screens
   const opacityTimerRef = useRef(null);
 
-  const itemsPerPage = 4;
+  // Update items per page based on screen width
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setItemsPerPage(1); // Mobile: 1 item
+      } else if (width < 768) {
+        setItemsPerPage(2); // Small tablets: 2 items
+      } else if (width < 1024) {
+        setItemsPerPage(3); // Medium screens: 3 items
+      } else {
+        setItemsPerPage(4); // Large screens: 4 items
+      }
+    };
+
+    // Initial call
+    updateItemsPerPage();
+
+    // Add resize listener
+    window.addEventListener('resize', updateItemsPerPage);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', updateItemsPerPage);
+  }, []);
+
+  // Recalculate total pages whenever itemsPerPage changes
   const totalPages = Math.ceil(glassesData.length / itemsPerPage);
 
-  // Gather all pages so we can do the "previous & next" item trick
+  // Reset current page when total pages changes to avoid out-of-bounds issues
+  useEffect(() => {
+    if (currentPage >= totalPages) {
+      setCurrentPage(0);
+    }
+  }, [totalPages, currentPage]);
+
+  // Gather all pages with appropriate previous and next items
   const getAllPageItems = () => {
     const result = [];
     for (let page = 0; page < totalPages; page++) {
       const startIdx = page * itemsPerPage;
       const currentItems = glassesData.slice(startIdx, startIdx + itemsPerPage);
 
-      // "previous item" for the fade
+      // Add "previous item" for the fade effect
       const prevItemIdx = (startIdx - 1 + glassesData.length) % glassesData.length;
       const prevItem = glassesData[prevItemIdx];
 
-      // "next item" for the fade
+      // Add "next item" for the fade effect
       const nextItemIdx = (startIdx + itemsPerPage) % glassesData.length;
       const nextItem = glassesData[nextItemIdx];
 
@@ -123,52 +156,65 @@ export default function GlassesShowcase() {
                 key={`page-${pageIndex}`}
                 className="flex-shrink-0 w-full flex"
               >
-                {pageItems.map((glasses, index) => (
-                  <div
-                    key={`${glasses.id}-${pageIndex}-${index}`}
-                    className="w-1/6 px-2 relative"
-                  >
+                {pageItems.map((glasses, index) => {
+                  // Calculate width based on items per page
+                  // +2 accounts for the edge items (prev and next)
+                  const itemWidth = 100 / (itemsPerPage + 2);
+                  
+                  return (
                     <div
-                      className="bg-white rounded-lg p-3 shadow-sm flex flex-col items-center h-full
+                      key={`${glasses.id}-${pageIndex}-${index}`}
+                      className="px-2 relative"
+                      style={{ width: `${itemWidth}%` }}
+                    >
+                      <div
+                        className="bg-white rounded-lg p-3 shadow-sm flex flex-col items-center h-full
                                  transition-all duration-1000 ease-in-out hover:shadow-md hover:-translate-y-1
                                  relative"
-                    >
-                      {index === 0 && (
-                        <div
-                          className="absolute inset-0 rounded-lg pointer-events-none z-10"
-                          style={{
-                            background:
-                              'linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 180%)',
-                            opacity: edgeOpacity,
-                            transition: 'opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)',
-                          }}
-                        />
-                      )}
-                      {index === 5 && (
-                        <div
-                          className="absolute inset-0 rounded-lg pointer-events-none z-10"
-                          style={{
-                            background:
-                              'linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 180%)',
-                            opacity: edgeOpacity,
-                            transition: 'opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)',
-                          }}
-                        />
-                      )}
+                      >
+                        {/* First item (edge fade) */}
+                        {index === 0 && (
+                          <div
+                            className="absolute inset-0 rounded-lg pointer-events-none z-10"
+                            style={{
+                              background:
+                                'linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 180%)',
+                              opacity: edgeOpacity,
+                              transition: 'opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)',
+                            }}
+                          />
+                        )}
+                        
+                        {/* Last item (edge fade) */}
+                        {index === itemsPerPage + 1 && (
+                          <div
+                            className="absolute inset-0 rounded-lg pointer-events-none z-10"
+                            style={{
+                              background:
+                                'linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 180%)',
+                              opacity: edgeOpacity,
+                              transition: 'opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)',
+                            }}
+                          />
+                        )}
 
-                      <div className="rounded-lg p-1 mb-1 w-full h-36 flex items-center justify-center">
-                        <img
-                          src={glasses.src}
-                          alt={glasses.name}
-                          className="max-h-32 max-w-full object-contain"
-                        />
+                        {/* Image container - make height responsive */}
+                        <div className="rounded-lg p-1 mb-1 w-full h-36 sm:h-32 md:h-36 flex items-center justify-center">
+                          <img
+                            src={glasses.src}
+                            alt={glasses.name}
+                            className="max-h-32 max-w-full object-contain"
+                          />
+                        </div>
+                        
+                        {/* Product name - adjust font size for mobile */}
+                        <h3 className="text-xs sm:text-sm font-medium text-gray-700 text-center">
+                          {glasses.name}
+                        </h3>
                       </div>
-                      <h3 className="text-sm font-medium text-gray-700">
-                        {glasses.name}
-                      </h3>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ))}
           </div>
@@ -187,12 +233,12 @@ export default function GlassesShowcase() {
       </div>
 
       {/* Page indicators */}
-      <div className="flex justify-center mt-10 gap-2">
+      <div className="flex justify-center mt-6 sm:mt-10 gap-2">
         {[...Array(totalPages)].map((_, i) => (
           <button
             key={i}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              currentPage === i ? 'bg-gray-700 w-6' : 'bg-gray-300'
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+              currentPage === i ? 'bg-gray-700 w-4 sm:w-6' : 'bg-gray-300'
             }`}
             onClick={() => {
               if (!isAnimating) {

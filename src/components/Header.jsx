@@ -2,7 +2,7 @@ import React from "react";
 
 function Header({ scrollToSection }) {
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white shadow-md py-0.2 px-6 z-50">
+    <header className="fixed top-0 left-0 right-0 bg-white shadow-md py-0.2 px-6 z-50 select-none">
       <div className="container mx-auto px-1 py-0 flex justify-between items-center">
         <a href="#" className="flex items-center -my-2"> {/* Negative margin to prevent header growth */}
           <img 

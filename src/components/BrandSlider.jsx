@@ -33,7 +33,7 @@ const slides = [
 
 export default function BrandSlider() {
   return (
-    <section className="w-full bg-teal-600 py-3">
+    <section className="w-full bg-teal-600 py-3 select-none">
       <Swiper
         modules={[Autoplay]}
         spaceBetween={5}

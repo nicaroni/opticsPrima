@@ -15,13 +15,13 @@ export default function HeroSection({
     const tokens = fullText.split(/(\[\[[\s\S]*?\]\]|\{\{[\s\S]*?\}\}|\[\*[\s\S]*?\*\])/g);
 
     return (
-      <div className="text-left">
+      <div className="text-left select-none">
         {tokens.map((token, i) => {
           // Bold black: [* ... *]
           if (/^\[\*[\s\S]*?\*\]$/.test(token)) {
             const content = token.slice(2, -2).trim();
             return (
-              <span key={i} className="font-bold text-teal-600 block text-left underline decoration-2 underline-offset-5">
+              <span key={i} className="font-bold text-teal-600 block text-left underline decoration-2 underline-offset-5 px-5">
                 {content}
               </span>
             );
@@ -63,7 +63,7 @@ export default function HeroSection({
   return (
     <section
       id={id}
-      className="py-18 min-h-screen bg-cover bg-center flex flex-col items-center justify-center px-4"
+      className="py-18 min-h-screen bg-cover bg-center flex flex-col items-center justify-center px-4 select-none"
       {...props}
     >
       {reverse ? (
