@@ -14,11 +14,11 @@ function Header({ scrollToSection }) {
               transition: "all 0.3s ease"
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.filter = "drop-shadow(2px 2px 0 #000) drop-shadow(3px 3px 0 #000) drop-shadow(px 4px 0 #000)"
+              e.currentTarget.style.filter = "drop-shadow(5px 2px 0 #000) drop-shadow(3px 3px 0 #000) drop-shadow(6px 5px 0 #000)"
               e.currentTarget.style.transform = "scale(0.85) translateY(-2px)"
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.filter = "drop-shadow(1px 1px 0 #000) drop-shadow(1px 1px 0 #000) drop-shadow(1px 1px 0 #000)"
+              e.currentTarget.style.filter = "drop-shadow(4px 1px 0 #000) drop-shadow(4px 3px 0 #000) drop-shadow(5px 1px 0 #000)"
               e.currentTarget.style.transform = "scale(0.8) translateY(0)"
             }}
           />

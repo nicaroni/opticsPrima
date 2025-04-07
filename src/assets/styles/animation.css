@@ -201,6 +201,11 @@
   transform: translateY(0) !important;
 }
 
+/* Make sure your banner has high z-index */
+.fixed.bottom-0.left-0.right-0.z-50 {
+  z-index: 9999 !important;
+}
+
   /************** ReviewCard ***************/
 /* *****************************************/
 

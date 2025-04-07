@@ -2,14 +2,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { glassesData } from './glassesData';
+import ImageLightbox from '../components/ImageLightbox';
 
 export default function GlassesShowcase() {
+  // Existing states
   const [currentPage, setCurrentPage] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [edgeOpacity, setEdgeOpacity] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(4); // Default for large screens
+  const [itemsPerPage, setItemsPerPage] = useState(4);
   const opacityTimerRef = useRef(null);
-
+  
+  // New lightbox states
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  
   // Update items per page based on screen width
   useEffect(() => {
     const updateItemsPerPage = () => {
@@ -126,20 +132,38 @@ export default function GlassesShowcase() {
   const slidePosition = currentPage * -100; // slide by 100% for each page
   const allPageItems = getAllPageItems();
 
+  // Lightbox handlers
+  const openLightbox = (glassesIndex) => {
+    setSelectedImageIndex(glassesIndex);
+    setLightboxOpen(true);
+  };
+  
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+  };
+  
+  const goToNextImage = () => {
+    setSelectedImageIndex((prev) => (prev === glassesData.length - 1 ? 0 : prev + 1));
+  };
+  
+  const goToPrevImage = () => {
+    setSelectedImageIndex((prev) => (prev === 0 ? glassesData.length - 1 : prev - 1));
+  };
+
   return (
     <div className="w-full py-2 px-4 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold mb-5 text-gray-700 text-center">
+      <h2 className="text-3xl font-bold mb-5  text-gray-700 text-center select-none">
         Нашата колекция
       </h2>
 
       <div className="relative">
-        {/* Left arrow */}
+        {/* Left arrow button (unchanged) */}
         <button
           onClick={goToPrevPage}
           disabled={isAnimating}
           className={`absolute -left-4 lg:-left-8 top-1/2 -translate-y-1/2 
-                      bg-white shadow-lg rounded-full p-2 z-10
-                      ${isAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
+                    bg-white shadow-lg rounded-full p-2 z-10 select-none
+                    ${isAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
         >
           <ChevronLeftIcon className="h-6 w-6 text-gray-700" />
         </button>
@@ -157,8 +181,19 @@ export default function GlassesShowcase() {
                 className="flex-shrink-0 w-full flex"
               >
                 {pageItems.map((glasses, index) => {
+                  // Find the real index in the original glassesData array
+                  const startIdx = currentPage * itemsPerPage;
+                  const realIndex = (() => {
+                    if (index === 0) {
+                      return (startIdx - 1 + glassesData.length) % glassesData.length;
+                    } else if (index === itemsPerPage + 1) {
+                      return (startIdx + itemsPerPage) % glassesData.length;
+                    } else {
+                      return (startIdx + index - 1) % glassesData.length;
+                    }
+                  })();
+                  
                   // Calculate width based on items per page
-                  // +2 accounts for the edge items (prev and next)
                   const itemWidth = 100 / (itemsPerPage + 2);
                   
                   return (
@@ -169,10 +204,10 @@ export default function GlassesShowcase() {
                     >
                       <div
                         className="bg-white rounded-lg p-3 shadow-sm flex flex-col items-center h-full
-                                 transition-all duration-1000 ease-in-out hover:shadow-md hover:-translate-y-1
-                                 relative"
+                               transition-all duration-1000 ease-in-out hover:shadow-md hover:-translate-y-1
+                               relative cursor-pointer select-none"
                       >
-                        {/* First item (edge fade) */}
+                        {/* First/last item fade effects (unchanged) */}
                         {index === 0 && (
                           <div
                             className="absolute inset-0 rounded-lg pointer-events-none z-10"
@@ -185,7 +220,6 @@ export default function GlassesShowcase() {
                           />
                         )}
                         
-                        {/* Last item (edge fade) */}
                         {index === itemsPerPage + 1 && (
                           <div
                             className="absolute inset-0 rounded-lg pointer-events-none z-10"
@@ -198,17 +232,20 @@ export default function GlassesShowcase() {
                           />
                         )}
 
-                        {/* Image container - make height responsive */}
-                        <div className="rounded-lg p-1 mb-1 w-full h-36 sm:h-32 md:h-36 flex items-center justify-center">
+                        {/* Clickable image container */}
+                        <div 
+                          className="rounded-lg p-1 mb-1 w-full  h-36 sm:h-32 md:h-36 flex items-center justify-center"
+                          onClick={() => openLightbox(realIndex)}
+                        >
                           <img
                             src={glasses.src}
                             alt={glasses.name}
-                            className="max-h-32 max-w-full object-contain"
+                            className="max-h-32 max-w-full object-contain cursor-pointer hover:opacity-90 transition-opacity"
                           />
                         </div>
                         
-                        {/* Product name - adjust font size for mobile */}
-                        <h3 className="text-xs sm:text-sm font-medium text-gray-700 text-center">
+                        {/* Product name */}
+                        <h3 className="text-xs sm:text-sm font-medium text-gray-700 text-center select-none">
                           {glasses.name}
                         </h3>
                       </div>
@@ -220,24 +257,24 @@ export default function GlassesShowcase() {
           </div>
         </div>
 
-        {/* Right arrow */}
+        {/* Right arrow button (unchanged) */}
         <button
           onClick={goToNextPage}
           disabled={isAnimating}
           className={`absolute -right-4 lg:-right-8 top-1/2 -translate-y-1/2 
-                      bg-white shadow-lg rounded-full p-2 z-10
-                      ${isAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
+                    bg-white shadow-lg rounded-full p-2 z-10 select-none
+                    ${isAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
         >
           <ChevronRightIcon className="h-6 w-6 text-gray-700" />
         </button>
       </div>
 
-      {/* Page indicators */}
-      <div className="flex justify-center mt-6 sm:mt-10 gap-2">
+      {/* Page indicators (unchanged) */}
+      <div className="flex justify-center  mt-6 sm:mt-10 gap-2 select-none">
         {[...Array(totalPages)].map((_, i) => (
           <button
             key={i}
-            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full  transition-all duration-300 ${
               currentPage === i ? 'bg-gray-700 w-4 sm:w-6' : 'bg-gray-300'
             }`}
             onClick={() => {
@@ -258,6 +295,17 @@ export default function GlassesShowcase() {
           />
         ))}
       </div>
+      
+      {/* Lightbox modal */}
+      <ImageLightbox 
+        isOpen={lightboxOpen}
+        onClose={closeLightbox}
+        currentImage={glassesData[selectedImageIndex]}
+        allImages={glassesData}
+        onPrev={goToPrevImage}
+        onNext={goToNextImage}
+        currentIndex={selectedImageIndex}
+      />
     </div>
   );
 }

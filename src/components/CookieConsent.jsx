@@ -15,23 +15,29 @@ export default function CookieConsent() {
   
   // Check for existing consent on mount
   useEffect(() => {
-    const savedConsent = localStorage.getItem('cookie-consent');
-    if (!savedConsent) {
-      // No consent found, show the banner
-      setVisible(true);
-    } else {
-      try {
-        // Parse saved preferences
-        const savedPreferences = JSON.parse(savedConsent);
-        setPreferences(prev => ({
-          ...prev,
-          ...savedPreferences
-        }));
-      } catch (e) {
-        console.error('Error parsing saved cookie consent');
+    // Short timeout to allow page to render first
+    setTimeout(() => {
+      const savedConsent = localStorage.getItem('cookie-consent');
+      if (!savedConsent) {
+        // No consent found, show the banner
         setVisible(true);
+      } else {
+        try {
+          // Parse saved preferences
+          const savedPreferences = JSON.parse(savedConsent);
+          setPreferences(prev => ({
+            ...prev,
+            ...savedPreferences
+          }));
+          
+          // Important: Apply settings on page load for returning visitors
+          applyConsentSettings(savedPreferences);
+        } catch (e) {
+          console.error('Error parsing saved cookie consent');
+          setVisible(true);
+        }
       }
-    }
+    }, 300); // Small delay for better UX
   }, []);
   
   // Save consent and hide banner
@@ -86,10 +92,19 @@ export default function CookieConsent() {
   };
   
   // If banner is not visible, don't render anything
-  if (!visible) return null;
-  
+  useEffect(() => {
+    if (visible) {
+      console.log("Cookie consent banner should be visible now!");
+    }
+  }, [visible]);
+
+  if (!visible) {
+    console.log("Cookie consent banner is currently hidden");
+    return null;
+  }
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg p-4 border-t-2 border-teal-600">
+    <div className="fixed bottom-0 left-0 right-0 z-[9999] bg-white shadow-lg p-4 border-t-2 border-teal-600">
       <div className="container mx-auto max-w-6xl">
         <div className="flex flex-col md:flex-row justify-between items-start gap-4">
           <div className="flex-1">
@@ -189,6 +204,8 @@ export default function CookieConsent() {
 
 // Helper function to apply consent settings to third-party scripts
 function applyConsentSettings(preferences) {
+  console.log('Applying consent settings:', preferences);
+  
   // Google Analytics
   if (preferences.analytics) {
     loadScript('https://www.googletagmanager.com/gtag/js?id=YOUR_GA_ID', 'google-analytics');

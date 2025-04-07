@@ -64,20 +64,6 @@ const createSlidesData = (scrollToSection) => [
     ]
   },
   {
-    title: 'Carrera със стил и отстъпка',
-    subtitle: 'До -40% на избрани рамки Carrera',
-    description: 'Само сега – комбинирай визия и качество на специална цена.',
-    imageSrc: '/images/model-girl3.jpg',
-    textOnLeft: false,
-    buttons: [
-      {
-        label: 'Виж част от моделите',
-        className: 'bg-teal-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-teal-700',
-        onClick: () => scrollToSection('collection') // Navigate to Carrera section
-      }
-    ]
-  },
-  {
     title: 'Стил, създаден за теб.',
     subtitle: 'Комфорт, който се усеща.',
     description: 'Открий внимателно подбрана селекция от диоптрични очила, съчетание между визия и грижа за зрението.',
