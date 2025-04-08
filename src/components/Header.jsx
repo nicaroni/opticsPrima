@@ -5,23 +5,14 @@ function Header({ scrollToSection }) {
     <header className="fixed top-0 left-0 right-0 bg-white shadow-md py-0.2 px-6 z-50 select-none">
       <div className="container mx-auto px-1 py-0 flex justify-between items-center">
         <a href="#" className="flex items-center -my-2"> {/* Negative margin to prevent header growth */}
-          <img 
-            src="/images/icon2.png" 
-            alt="Optica Prima Logo" 
-            className="h-16 md:h-20 w-auto object-contain transform scale-80 transition-all duration-300"
-            style={{
-              filter: "drop-shadow(1px 1px 0 #000) drop-shadow(2px 2px 0 #000) drop-shadow(3px 3px 0 #000)",
-              transition: "all 0.3s ease"
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.filter = "drop-shadow(5px 2px 0 #000) drop-shadow(3px 3px 0 #000) drop-shadow(6px 5px 0 #000)"
-              e.currentTarget.style.transform = "scale(0.85) translateY(-2px)"
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.filter = "drop-shadow(4px 1px 0 #000) drop-shadow(4px 3px 0 #000) drop-shadow(5px 1px 0 #000)"
-              e.currentTarget.style.transform = "scale(0.8) translateY(0)"
-            }}
-          />
+        <img 
+  src="/images/icon2.png" 
+  alt="Optica Prima Logo" 
+  className="h-16 md:h-20 w-35 object-contain 
+  transition-all duration-300 drop-shadow-custom 
+  hover:drop-shadow-hover-custom hover:scale-85 hover:-translate-y-0.5"
+/>
+
         </a>
         
         <nav className="hidden md:block">

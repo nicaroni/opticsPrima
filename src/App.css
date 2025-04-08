@@ -79,3 +79,25 @@
     align-items: flex-start;
 }
 
+/*****              Tailwind version                      ****/ 
+@layer utilities {
+  .drop-shadow-custom {
+    filter: drop-shadow(1px 1px 0 #000) 
+            drop-shadow(2px 2px 0 #000) 
+            drop-shadow(3px 3px 0 #000);
+  }
+
+  .hover\:drop-shadow-hover-custom:hover {
+    filter: drop-shadow(5px 2px 0 #000) 
+            drop-shadow(3px 3px 0 #000) 
+            drop-shadow(6px 5px 0 #000);
+  }
+
+  .scale-80 {
+    transform: scale(0.8);
+  }
+
+  .hover\:scale-85:hover {
+    transform: scale(0.90);
+  }
+}
