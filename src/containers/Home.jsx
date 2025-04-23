@@ -11,6 +11,8 @@ import TestimonialsSection from '../containers/TestimonialsSection';
 import ContactSection from '../components/ContactSection'; // Not from './ContactSection'
 import HeroSection from '../components/HeroSection'; // Not fr
 import CookieSettings from '../components/CookieSettings'; // NEW
+import BrandGrid from './BrandGrid';
+import VideoSection from './VideoSection';
 
 import useScrollReveal from '../hooks/useScrollReveal';  // NEW
 import '../assets/styles/animation.css';
@@ -117,7 +119,7 @@ function Home() {
         onClick={() => scrollToSection('collection')}
         className="cursor-pointer hover:opacity-90 transition-opacity"
       >
-        <BrandSlider />
+        <BrandSlider  scrollToSection={scrollToSection}/>
       </div>
 
       {/* Hero: Dioptric Glasses */}
@@ -125,7 +127,7 @@ function Home() {
         id="dioptric"
         title="Диоптрични очила"
         text={`Открийте богата селекция от стилни и функционални диоптрични очила, съобразени с вашите нужди.`}
-        imageSrc="/images/glasses-main.jpg"
+        imageSrc="/images/glasses3.jpg"
       />
 
       {/* Hero: Sunglasses */}
@@ -133,9 +135,13 @@ function Home() {
         id="sunglasses"
         title="Слънчеви очила"
         text={`Защити очите си със стил – новата ни колекция слънчеви очила с UV защита.`}
-        imageSrc="/images/glasses-main2.jpg"
+        imageSrc="/images/glasses2.jpg"
         reverse
       />
+
+
+<BrandGrid scrollToSection={scrollToSection} />
+      
 
         {/* Hero: Sunglasses */}
         <HeroSection
@@ -150,6 +156,7 @@ function Home() {
         />
 
 
+
       <HeroSection
         id="lenses"
         title="Висококачествени стъкла за перфектно зрение"
@@ -162,7 +169,7 @@ function Home() {
         и бюджетната линия [[Smile by Essilor]]
         
         всички с гарантирано качество и висока прецизност.`}
-        imageSrc="/images/lenses.png"
+        imageSrc="/images/lenses.jpg"
       />
 
        {/* Hero: Sunglasses */}
@@ -214,7 +221,7 @@ function Home() {
         💬 Ясната визия започва с добър преглед – от доверен и опитен оптометрист.
 
         `}
-        imageSrc="/images/appointment-model.jpg"
+        imageSrc="/images/model-15.jpg"
       />
 
       {/* Hero: Sunglasses */}
@@ -250,6 +257,7 @@ function Home() {
         imageSrc="/images/optic.png"
       />
 
+<VideoSection />
 
       {/* Testimonials */}
       <TestimonialsSection id="testimonials" />

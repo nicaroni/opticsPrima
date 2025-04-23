@@ -25,7 +25,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Технология с прецизност.',
     subtitle: 'Диагностика, на която можеш да разчиташ.',
     description: 'Работим с висококласна апаратура за точно измерване и максимална грижа за твоето зрение.',
-    imageSrc: '/images/eye-exam.jpg',
+    imageSrc: '/images/machine.png',
     textOnLeft: true,
     buttons: [
       {
@@ -39,7 +39,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Погледни уверено към светлината.',
     subtitle: 'UV защита със стил.',
     description: 'Премиум слънчеви очила, които предпазват и подчертават твоята индивидуалност.',
-    imageSrc: '/images/model-girl6.jpg',
+    imageSrc: '/images/model-4.jpg',
     textOnLeft: true,
     buttons: [
       {
@@ -53,7 +53,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Виж ясно. Живей пълноценно.',
     subtitle: 'Прецизна диагностика от опитен оптометрист.',
     description: 'Разбери повече за грижата, която стои зад правилно подбраните очила.',
-    imageSrc: '/images/model-girl5.jpg',
+    imageSrc: '/images/model-7.jpg',
     textOnLeft: true,
     buttons: [
       {
@@ -67,7 +67,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Стил, създаден за теб.',
     subtitle: 'Комфорт, който се усеща.',
     description: 'Открий внимателно подбрана селекция от диоптрични очила, съчетание между визия и грижа за зрението.',
-    imageSrc: '/images/model-girl7.jpg',
+    imageSrc: '/images/model-9.jpg',
     textOnLeft: true,
     buttons: [
       {
