@@ -141,11 +141,7 @@ export default function ImageLightbox({
           </div>
         )}
         
-        {/* Product name */}
-        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 rounded-3xl text-white p-4 text-center">
-          <h3 className="text-lg md:text-xl font-medium">{currentImage?.name}</h3>
-        </div>
-      </div>
+       
 
       {/* Next button with white circle and black arrow */}
       <button 
@@ -161,10 +157,17 @@ export default function ImageLightbox({
         {currentIndex + 1} / {allImages.length}
       </div>
       
+     
+      </div>
       {/* Optional swipe instructions for users on first open */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 text-sm text-white bg-black bg-opacity-40 px-3 py-1 rounded-full opacity-70">
         Плъзнете за навигация
       </div>
+
+        {/* Product name */}
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-full max-w-md px-4 sm:max-w-lg md:max-w-250 bg-black bg-opacity-50 rounded-3xl text-white p-5 text-center">
+          <h3 className="text-lg md:text-xl font-medium">{currentImage?.name}</h3>
+        </div>
     </div>
   );
 }
