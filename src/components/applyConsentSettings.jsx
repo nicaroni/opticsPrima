@@ -16,24 +16,34 @@ export function applyConsentSettings(preferences) {
       iframe.allow = "encrypted-media";
       el.parentNode.replaceChild(iframe, el);
     });
+    
+    // Add Facebook Pixel graceful handling
+    try {
+      loadScript('https://connect.facebook.net/en_US/fbevents.js', 'fb-pixel')
+        .catch(err => console.log('Facebook Pixel loading skipped - likely blocked by user'));
+    } catch (e) {
+      // Silently fail - user might have blocking extensions
+    }
   }
   
   // Calendly (functional)
   if (preferences.functional) {
-    loadScript('https://assets.calendly.com/assets/external/widget.js', 'calendly-script');
-    
-    // Re-initialize Calendly widgets if needed
-    const calendlyElements = document.querySelectorAll('.calendly-inline-widget');
-    if (window.Calendly) {
-      calendlyElements.forEach(el => {
-        const url = el.dataset.url;
-        // Re-initialize Calendly
-        window.Calendly.initInlineWidget({
-          url: url,
-          parentElement: el
-        });
-      });
-    }
+    loadScript('https://assets.calendly.com/assets/external/widget.js', 'calendly-script')
+      .then(() => {
+        // Re-initialize Calendly widgets if needed
+        const calendlyElements = document.querySelectorAll('.calendly-inline-widget');
+        if (window.Calendly) {
+          calendlyElements.forEach(el => {
+            const url = el.dataset.url;
+            // Re-initialize Calendly
+            window.Calendly.initInlineWidget({
+              url: url,
+              parentElement: el
+            });
+          });
+        }
+      })
+      .catch(err => console.warn('Calendly widget initialization failed:', err));
   }
 }
 

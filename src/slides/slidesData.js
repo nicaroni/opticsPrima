@@ -6,7 +6,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Твоето зрение е наш приоритет',
     subtitle: '',
     description: 'Твоето зрение заслужава най-доброто – диоптрични / слънчеви очила и професионален преглед.',
-    imageSrc: '/images/optic.png',
+    imageSrc: '/images/optic.jpg',
     textOnLeft: true,
     buttons: [
       {

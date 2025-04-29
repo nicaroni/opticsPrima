@@ -153,9 +153,9 @@ export default function ImageLightbox({
       </button>
       
       {/* Image counter */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-1 rounded-full">
-        {currentIndex + 1} / {allImages.length}
-      </div>
+      <div className="fixed bottom-25 left-1/2 -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-1 rounded-full z-[60] shadow-md">
+  {currentIndex + 1} / {allImages.length}
+    </div>  
       
      
       </div>
