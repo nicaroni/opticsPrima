@@ -19,10 +19,13 @@ export function applyConsentSettings(preferences) {
     
     // Add Facebook Pixel graceful handling
     try {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Attempting to load Facebook tracking');
+      }
       loadScript('https://connect.facebook.net/en_US/fbevents.js', 'fb-pixel')
-        .catch(err => console.log('Facebook Pixel loading skipped - likely blocked by user'));
+        .catch(() => {}); // Silent fail - don't log errors in console
     } catch (e) {
-      // Silently fail - user might have blocking extensions
+      // Silent fail
     }
   }
   
