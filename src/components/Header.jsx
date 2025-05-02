@@ -10,7 +10,7 @@ function Header({ scrollToSection }) {
   alt="Optica Prima Logo" 
   className="h-21 md:h-20 w-35 object-contain 
   transition-all duration-300 drop-shadow-custom 
-  hover:drop-shadow-hover-custom hover:scale-85 hover:-translate-y-0.5"
+  hover:drop-shadow-hover-custom hover:scale-85 hover:-translate-y-0.9"
 />
 
         </a>
