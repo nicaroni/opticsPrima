@@ -197,7 +197,7 @@ export default function ContactSection() {
         >
           <div className="bg-white rounded-xl shadow-lg overflow-hidden w-full p-4 h-full flex flex-col cursor-default">
             <div className="relative flex-grow">
-              <iframe 
+              <iframe
                 src="https://docs.google.com/forms/d/e/1FAIpQLSdy_NoLLl1pc0W6VbT5jsulexDIHeykcX8e7nLPS6H3-6khsg/viewform?embedded=true" 
                 width="100%" 
                 height="650" 
@@ -206,11 +206,17 @@ export default function ContactSection() {
                 marginWidth="0"
                 title="Contact Form"
                 className="absolute inset-0"
-                onLoad={() => setFormLoaded(true)}
-                onError={(e) => {
-                  console.log("Form iframe loaded with fallback");
-                  setFormLoaded(true);
+                onLoad={() => {
+                  // Set a small delay to ensure form is fully rendered
+                  setTimeout(() => setFormLoaded(true), 100);
                 }}
+                onError={() => {
+                  // Always mark as loaded even with font errors
+                  setFormLoaded(true);
+                  // Don't log errors to keep console clean
+                }}
+                importance="high"
+                loading="eager"
               >
                 Зареждане…
               </iframe>

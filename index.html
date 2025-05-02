@@ -8,16 +8,20 @@
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   script-src 'self' https://assets.calendly.com https://www.google.com https://www.gstatic.com https://docs.google.com https://connect.facebook.net;
-  frame-src https://calendly.com https://www.facebook.com https://www.google.com https://www.gstatic.com https://docs.google.com;
-  style-src 'self' 'unsafe-inline' https://www.gstatic.com;
+  frame-src https://calendly.com https://www.facebook.com https://www.google.com https://www.gstatic.com https://docs.google.com https://fonts.googleapis.com;
+  style-src 'self' 'unsafe-inline' https://www.gstatic.com https://fonts.googleapis.com;
   img-src 'self' data: https://www.google.com https://www.facebook.com https://www.gstatic.com https://docs.google.com https://res.cloudinary.com;
   media-src 'self' https://res.cloudinary.com;
   connect-src 'self' https://www.google.com;
-  font-src 'self' https://fonts.gstatic.com data:;
+  font-src 'self' https://fonts.gstatic.com https://docs.google.com https://fonts.googleapis.com data:;
   object-src 'none';
   base-uri 'self';
   form-action 'self' https://docs.google.com;">
+<meta http-equiv="Permissions-Policy" content="payment=()">
 
+    <link rel="preconnect" href="https://docs.google.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="icon" type="image/png" sizes="32x32" href="/images/icon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/icon/favicon-16x16.png">
     <title>Optica Prima</title>
