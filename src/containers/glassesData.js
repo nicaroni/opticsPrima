@@ -25,7 +25,7 @@ export const glassesData = [
   { id: 23, src: '/images/glasses/27.png', name: '' },
   { id: 24, src: '/images/glasses/28.png', name: '' },
   { id: 25, src: '/images/glasses/31.png', name: '' },
-  { id: 25, src: '/images/glasses/32.png', name: '' },
+  { id: 26, src: '/images/glasses/32.png', name: '' },
   { id: 27, src: '/images/glasses/33.png', name: '' },
 
 ];

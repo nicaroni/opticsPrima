@@ -5,18 +5,18 @@ import AnimatedSlide from './slides/AnimatedSlide';
 import createSlidesData from './slides/slidesData';
 import ImagePreloader from './components/ImagePreloader';
 
-
 // This ensures images are actually loaded into cache
 function preloadImage(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.src = src;
     img.onload = () => {
-      console.log(`Successfully preloaded: ${src}`);
       resolve(img);
     };
     img.onerror = () => {
-      console.error(`Failed to preload: ${src}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(`Failed to preload: ${src}`);
+      }
       reject(new Error(`Failed to preload ${src}`));
     };
   });
@@ -69,9 +69,10 @@ export default function CustomSlideshow({ scrollToSection }) {
         const promises = allImageSrcs.map(src => preloadImage(src));
         const loaded = await Promise.allSettled(promises);
         setPreloadedImages(loaded.filter(result => result.status === 'fulfilled').map(result => result.value));
-        console.log(`Preloaded ${loaded.length} images`);
       } catch (error) {
-        console.error("Error preloading images:", error);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error("Error preloading images:", error);
+        }
       }
     };
 
@@ -100,7 +101,11 @@ export default function CustomSlideshow({ scrollToSection }) {
       preloadImage(slidesData[actualIndex].imageSrc),
       preloadImage(nextSlide.imageSrc),
       preloadImage(prevSlide.imageSrc)
-    ]).catch(err => console.error("Error preloading surrounding slides:", err));
+    ]).catch(err => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error("Error preloading surrounding slides:", err);
+      }
+    });
 
     // Trigger exit on current slide
     setIsExiting(true);
@@ -214,9 +219,6 @@ export default function CustomSlideshow({ scrollToSection }) {
       )}
      */} 
 
-      
-
-     
     </>
   );
 }

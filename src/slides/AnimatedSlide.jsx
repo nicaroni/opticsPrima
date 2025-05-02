@@ -64,7 +64,6 @@ export default function AnimatedSlide({
   useEffect(() => {
     // Only reset if the image source actually changed
     if (currentImageSrcRef.current !== imageSrc) {
-      console.log(`Image source changed: ${imageSrc}`);
       setImageLoaded(false);
       setImageError(false);
       currentImageSrcRef.current = imageSrc;
@@ -74,7 +73,9 @@ export default function AnimatedSlide({
       img.src = imageSrc;
       img.onload = () => setImageLoaded(true);
       img.onerror = () => {
-        console.error(`Failed to load image: ${imageSrc}`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(`Failed to load image: ${imageSrc}`);
+        }
         setImageError(true);
       };
     }
@@ -112,8 +113,6 @@ export default function AnimatedSlide({
     'transform',
     imageVisible ? imageVisibleState : imageHidden,
   ].join(' ');
-
-  console.log(`Rendering slide with image: ${imageSrc}, loaded: ${imageLoaded}, error: ${imageError}`);
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center bg-gradient-to-br 
@@ -170,12 +169,13 @@ export default function AnimatedSlide({
                         transition-opacity duration-500 ease-in-out ${
                           imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'
                         }`}
-            onLoad={(e) => {
-              console.log(`Image loaded: ${imageSrc}`);
+            onLoad={() => {
               setImageLoaded(true);
             }}
-            onError={(e) => {
-              console.error(`Failed to load image: ${imageSrc}`);
+            onError={() => {
+              if (process.env.NODE_ENV !== 'production') {
+                console.error(`Failed to load image: ${imageSrc}`);
+              }
               setImageError(true);
             }}
             alt="Slide visual"

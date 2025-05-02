@@ -165,9 +165,7 @@ export default function ImageLightbox({
       </div>
 
         {/* Product name */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-full max-w-md px-4 sm:max-w-lg md:max-w-250 bg-black bg-opacity-50 rounded-3xl text-white p-5 text-center">
-          <h3 className="text-lg md:text-xl font-medium">{currentImage?.name}</h3>
-        </div>
+      
     </div>
   );
 }

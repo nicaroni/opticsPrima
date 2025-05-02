@@ -1,5 +1,3 @@
-
-
 import { useEffect } from 'react';
 
 export default function ImagePreloader({ imageSrcs = [] }) {
@@ -12,14 +10,17 @@ export default function ImagePreloader({ imageSrcs = [] }) {
         img.src = src;
         preloadedImages.push(img); // Keep reference to avoid garbage collection
         
-        // Debug success/failure
-        img.onload = () => console.log(`Preloaded: ${src}`);
-        img.onerror = () => console.error(`Failed to preload: ${src}`);
+        // Optionally keep minimal error logging for production issues
+        img.onerror = () => {
+          if (process.env.NODE_ENV !== 'production') {
+            console.error(`Failed to preload: ${src}`);
+          }
+        };
       }
     });
     
     return () => {
-      // Clear references on cleanup
+      // Clean up references on unmount
       preloadedImages.forEach(img => {
         img.onload = null;
         img.onerror = null;

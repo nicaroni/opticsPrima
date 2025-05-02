@@ -8,7 +8,7 @@ function Header({ scrollToSection }) {
         <img 
   src="/images/icon2.png" 
   alt="Optica Prima Logo" 
-  className="h-16 md:h-20 w-35 object-contain 
+  className="h-21 md:h-20 w-35 object-contain 
   transition-all duration-300 drop-shadow-custom 
   hover:drop-shadow-hover-custom hover:scale-85 hover:-translate-y-0.5"
 />
