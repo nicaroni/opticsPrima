@@ -64,7 +64,6 @@ export default function VideoSection() {
                 muted
                 playsInline
                 preload="auto"
-                poster={`/images/glasses${index % 2 === 0 ? "1" : "2"}.jpg`}
                 style={{ aspectRatio: '16/9' }}
               >
                 <source src={videoUrl} type="video/mp4" />

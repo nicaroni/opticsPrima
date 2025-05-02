@@ -23,9 +23,11 @@ export const glassesData = [
   { id: 21, src: '/images/glasses/22.png', name: '' },
   { id: 22, src: '/images/glasses/23.png', name: '' },
   { id: 23, src: '/images/glasses/27.png', name: '' },
-  { id: 24, src: '/images/glasses/28.png', name: '' },
-  { id: 25, src: '/images/glasses/31.png', name: '' },
-  { id: 26, src: '/images/glasses/32.png', name: '' },
-  { id: 27, src: '/images/glasses/33.png', name: '' },
+  { id: 51, src: '/images/glasses/28.png', name: '' },
+  { id: 52, src: '/images/glasses/31.png', name: '' },
+  { id: 53, src: '/images/glasses/32.png', name: '' },
+  { id: 56, src: '/images/glasses/33.png', name: '' },
 
 ];
+
+

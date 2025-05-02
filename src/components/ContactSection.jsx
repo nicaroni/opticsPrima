@@ -213,10 +213,8 @@ export default function ContactSection() {
                 onError={() => {
                   // Always mark as loaded even with font errors
                   setFormLoaded(true);
-                  // Don't log errors to keep console clean
                 }}
                 importance="high"
-                loading="eager"
               >
                 Зареждане…
               </iframe>

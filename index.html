@@ -7,12 +7,13 @@
 <meta name="keywords" content="оптика, очила, диоптрични очила, слънчеви очила, очен преглед, Царево">
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' https://assets.calendly.com https://www.google.com https://www.gstatic.com https://docs.google.com https://connect.facebook.net;
+  script-src 'self' 'unsafe-inline' https://assets.calendly.com https://www.google.com https://www.gstatic.com https://docs.google.com https://connect.facebook.net;
+  script-src-elem 'self' 'unsafe-inline' https://assets.calendly.com https://www.google.com https://www.gstatic.com https://docs.google.com https://connect.facebook.net;
   frame-src https://calendly.com https://www.facebook.com https://www.google.com https://www.gstatic.com https://docs.google.com https://fonts.googleapis.com;
   style-src 'self' 'unsafe-inline' https://www.gstatic.com https://fonts.googleapis.com;
   img-src 'self' data: https://www.google.com https://www.facebook.com https://www.gstatic.com https://docs.google.com https://res.cloudinary.com;
   media-src 'self' https://res.cloudinary.com;
-  connect-src 'self' https://www.google.com;
+  connect-src 'self' https://www.google.com https://connect.facebook.net;
   font-src 'self' https://fonts.gstatic.com https://docs.google.com https://fonts.googleapis.com data:;
   object-src 'none';
   base-uri 'self';
