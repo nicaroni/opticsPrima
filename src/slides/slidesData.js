@@ -1,12 +1,23 @@
 // src/slides/slidesData.js
 
-// Convert from array to function that returns array with navigation
+// Use version numbers instead of timestamps for more consistent caching
+const slideImages = [
+  '/images/optic-new.jpg',
+  '/images/machine.png',
+  '/images/model-4.jpg',
+  '/images/model-7.jpg',
+  '/images/model-9.jpg'
+];
+
+// Ensure images are preloadable with correct paths
+const CACHE_BUSTER = '1.0';
+
 const createSlidesData = (scrollToSection) => [
   {
     title: 'Твоето зрение е наш приоритет',
     subtitle: '',
     description: 'Твоето зрение заслужава най-доброто – диоптрични / слънчеви очила и професионален преглед.',
-    imageSrc: '/images/optic-new.jpg',
+    imageSrc: `${slideImages[0]}?v=${CACHE_BUSTER}`,
     textOnLeft: true,
     buttons: [
       {
@@ -25,7 +36,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Технология с прецизност.',
     subtitle: 'Диагностика, на която можеш да разчиташ.',
     description: 'Работим с висококласна апаратура за точно измерване и максимална грижа за твоето зрение.',
-    imageSrc: '/images/machine.png',
+    imageSrc: `${slideImages[1]}?v=${CACHE_BUSTER}`,
     textOnLeft: true,
     buttons: [
       {
@@ -39,7 +50,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Погледни уверено към светлината.',
     subtitle: 'UV защита със стил.',
     description: 'Премиум слънчеви очила, които предпазват и подчертават твоята индивидуалност.',
-    imageSrc: '/images/model-4.jpg',
+    imageSrc: `${slideImages[2]}?v=${CACHE_BUSTER}`,
     textOnLeft: true,
     buttons: [
       {
@@ -53,7 +64,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Виж ясно. Живей пълноценно.',
     subtitle: 'Прецизна диагностика от опитен оптометрист.',
     description: 'Разбери повече за грижата, която стои зад правилно подбраните очила.',
-    imageSrc: '/images/model-7.jpg',
+    imageSrc: `${slideImages[3]}?v=${CACHE_BUSTER}`,
     textOnLeft: true,
     buttons: [
       {
@@ -67,7 +78,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Стил, създаден за теб.',
     subtitle: 'Комфорт, който се усеща.',
     description: 'Открий внимателно подбрана селекция от диоптрични очила, съчетание между визия и грижа за зрението.',
-    imageSrc: '/images/model-9.jpg',
+    imageSrc: `${slideImages[4]}?v=${CACHE_BUSTER}`,
     textOnLeft: true,
     buttons: [
       {
@@ -79,4 +90,5 @@ const createSlidesData = (scrollToSection) => [
   },
 ];
 
+export { slideImages }; // Export for preloading
 export default createSlidesData;
