@@ -89,11 +89,14 @@ export default function AnimatedSlide({
   const imageHidden = textOnLeft ? 'translate-x-20 opacity-0' : '-translate-x-20 opacity-0';
   const imageVisibleState = 'translate-x-0 opacity-100';
 
+  // Adjusted text classes - smaller width on mobile, responsive text sizes
   const textClasses = [
-    'w-1/2',
+    'w-2/5',            // Smaller width on all screens (40%)
+    'md:w-[45%]',       // Back to 45% on medium screens
     'lg:w-[45%]',
     'xl:w-[40%]',
-    'p-4',
+    'p-2',              // Less padding on mobile
+    'md:p-4',           // Back to normal padding on medium screens
     'rounded-lg',
     'transition-all',
     'duration-700',
@@ -102,8 +105,10 @@ export default function AnimatedSlide({
     textVisible ? textVisibleState : textHidden,
   ].join(' ');
 
+  // Adjusted image classes - larger width on mobile
   const imageClasses = [
-    'w-1/2',
+    'w-3/5',            // Larger width on all screens (60%)
+    'md:w-[45%]',       // Back to 45% on medium screens
     'lg:w-[45%]',
     'xl:w-[40%]',
     'rounded-lg',
@@ -119,20 +124,20 @@ export default function AnimatedSlide({
                     from-[#fdfbfb] to-[#ebedee] text-white px-6">
       <section className="min-h-screen bg-cover bg-center flex flex-row items-center 
                          justify-center text-white px-4 gap-6 relative overflow-hidden select-none">
-        {/* TEXT BLOCK */}
+        {/* TEXT BLOCK - Responsive text sizes */}
         {textOnLeft && (
           <div className={textClasses}>
-            <h1 className="text-4xl font-bold mb-4 text-gray-600">{title}</h1>
-            {subtitle && <h2 className="text-xl font-bold mb-4 text-gray-600">{subtitle}</h2>}
-            <p className="text-xl mb-6 max-w-xl text-gray-600">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 md:mb-4 text-gray-600">{title}</h1>
+            {subtitle && <h2 className="text-lg sm:text-xl font-bold mb-2 md:mb-4 text-gray-600">{subtitle}</h2>}
+            <p className="text-sm sm:text-lg md:text-xl mb-3 md:mb-6 max-w-xl text-gray-600">
               {description}
             </p>
             {buttons.length > 0 && (
-              <div className="space-x-4">
+              <div className="space-x-2 sm:space-x-4">
                 {buttons.map((btn, i) => (
                   <button
                     key={i}
-                    className={btn.className}
+                    className={`${btn.className} text-sm sm:text-base`}
                     onClick={btn.onClick}
                   >
                     {btn.label}
@@ -165,7 +170,7 @@ export default function AnimatedSlide({
             key={imageSrc} // Add a key to force re-render when image changes
             src={imageSrc}
             loading="eager"
-            className={`w-full h-[75vh] object-cover object-top rounded-lg shadow-lg 
+            className={`w-full h-[75vh] object-cover object-center rounded-lg shadow-lg 
                         transition-opacity duration-500 ease-in-out ${
                           imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'
                         }`}
@@ -182,20 +187,20 @@ export default function AnimatedSlide({
           />
         </div>
 
-        {/* If text is on the right */}
+        {/* If text is on the right - Responsive text sizes */}
         {!textOnLeft && (
           <div className={textClasses}>
-            <h1 className="text-4xl font-bold mb-4 text-gray-600">{title}</h1>
-            {subtitle && <h2 className="text-xl font-bold mb-4 text-gray-600">{subtitle}</h2>}
-            <p className="text-xl mb-6 max-w-xl text-gray-600">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 md:mb-4 text-gray-600">{title}</h1>
+            {subtitle && <h2 className="text-lg sm:text-xl font-bold mb-2 md:mb-4 text-gray-600">{subtitle}</h2>}
+            <p className="text-sm sm:text-lg md:text-xl mb-3 md:mb-6 max-w-xl text-gray-600">
               {description}
             </p>
             {buttons.length > 0 && (
-              <div className="space-x-4">
+              <div className="space-x-2 sm:space-x-4">
                 {buttons.map((btn, i) => (
                   <button
                     key={i}
-                    className={btn.className}
+                    className={`${btn.className} text-sm sm:text-base`}
                     onClick={btn.onClick}
                   >
                     {btn.label}

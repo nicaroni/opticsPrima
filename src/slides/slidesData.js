@@ -1,23 +1,22 @@
 // src/slides/slidesData.js
 
-// Use version numbers instead of timestamps for more consistent caching
+// Use Cloudinary URLs for better performance and delivery
 const slideImages = [
-  '/images/optic-new.jpg',
-  '/images/machine.png',
-  '/images/model-4.jpg',
-  '/images/model-7.jpg',
-  '/images/model-9.jpg'
+  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602934/optic-new_pu9ww5.jpg',
+  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602700/machine_is3le5.png',
+  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602907/model-4_kyvml0.jpg',
+  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602904/model-7_aproln.jpg',
+  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602903/model-9_umxbqp.jpg'
 ];
 
-// Ensure images are preloadable with correct paths
-const CACHE_BUSTER = '1.0';
+// We can remove the cache buster since Cloudinary handles versioning
 
 const createSlidesData = (scrollToSection) => [
   {
     title: 'Твоето зрение е наш приоритет',
     subtitle: '',
     description: 'Твоето зрение заслужава най-доброто – диоптрични / слънчеви очила и професионален преглед.',
-    imageSrc: `${slideImages[0]}?v=${CACHE_BUSTER}`,
+    imageSrc: slideImages[0],
     textOnLeft: true,
     buttons: [
       {
@@ -36,7 +35,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Технология с прецизност.',
     subtitle: 'Диагностика, на която можеш да разчиташ.',
     description: 'Работим с висококласна апаратура за точно измерване и максимална грижа за твоето зрение.',
-    imageSrc: `${slideImages[1]}?v=${CACHE_BUSTER}`,
+    imageSrc: slideImages[1],
     textOnLeft: true,
     buttons: [
       {
@@ -50,7 +49,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Погледни уверено към светлината.',
     subtitle: 'UV защита със стил.',
     description: 'Премиум слънчеви очила, които предпазват и подчертават твоята индивидуалност.',
-    imageSrc: `${slideImages[2]}?v=${CACHE_BUSTER}`,
+    imageSrc: slideImages[2],
     textOnLeft: true,
     buttons: [
       {
@@ -64,7 +63,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Виж ясно. Живей пълноценно.',
     subtitle: 'Прецизна диагностика от опитен оптометрист.',
     description: 'Разбери повече за грижата, която стои зад правилно подбраните очила.',
-    imageSrc: `${slideImages[3]}?v=${CACHE_BUSTER}`,
+    imageSrc: slideImages[3],
     textOnLeft: true,
     buttons: [
       {
@@ -78,7 +77,7 @@ const createSlidesData = (scrollToSection) => [
     title: 'Стил, създаден за теб.',
     subtitle: 'Комфорт, който се усеща.',
     description: 'Открий внимателно подбрана селекция от диоптрични очила, съчетание между визия и грижа за зрението.',
-    imageSrc: `${slideImages[4]}?v=${CACHE_BUSTER}`,
+    imageSrc: slideImages[4],
     textOnLeft: true,
     buttons: [
       {

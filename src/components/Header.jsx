@@ -6,21 +6,20 @@ function Header({ scrollToSection }) {
       <div className="container mx-auto px-1 py-0 flex justify-between items-center">
         <a href="#" className="flex items-center -my-2"> {/* Negative margin to prevent header growth */}
         <img 
-  src="/images/icon2.png" 
-  alt="Optica Prima Logo" 
-  className="h-21 md:h-20 w-35 object-contain 
-  transition-all duration-300 drop-shadow-custom 
-  hover:drop-shadow-hover-custom hover:scale-85 hover:-translate-y-0.9"
-/>
-
+          src="/images/icon2.png" 
+          alt="Optica Prima Logo" 
+          className="h-21 md:h-20 w-35 object-contain 
+          transition-all duration-300 drop-shadow-custom 
+          hover:drop-shadow-hover-custom hover:scale-85 hover:-translate-y-0.9"
+        />
         </a>
         
         <nav className="hidden md:block">
-          <ul className="flex space-x-6 text-shadow-lg ">
+          <ul className="flex space-x-6 text-shadow-lg">
             <li>
               <button 
                 onClick={() => scrollToSection('dioptric')}
-                className=" text-gray-600  hover:text-teal-600 text-shadow-sharp"
+                className="text-gray-600 hover:text-teal-600 text-shadow-sharp cursor-pointer"
               >
                 Диоптрични очила
               </button>
@@ -28,7 +27,7 @@ function Header({ scrollToSection }) {
             <li>
               <button 
                 onClick={() => scrollToSection('sunglasses')}
-                className=" text-gray-600 hover:text-teal-600"
+                className="text-gray-600 hover:text-teal-600 cursor-pointer"
               >
                 Слънчеви очила
               </button>
@@ -36,7 +35,7 @@ function Header({ scrollToSection }) {
             <li>
               <button 
                 onClick={() => scrollToSection('eye-exams')}
-                className=" text-gray-600 hover:text-teal-600"
+                className="text-gray-600 hover:text-teal-600 cursor-pointer"
               >
                 Очен преглед
               </button>
@@ -44,7 +43,7 @@ function Header({ scrollToSection }) {
             <li>
               <button 
                 onClick={() => scrollToSection('testimonials')}
-                className=" text-gray-600 hover:text-teal-600"
+                className="text-gray-600 hover:text-teal-600 cursor-pointer"
               >
                 Отзиви
               </button>
@@ -52,7 +51,7 @@ function Header({ scrollToSection }) {
             <li>
               <button 
                 onClick={() => scrollToSection('contact')}
-                className=" text-gray-600 hover:text-teal-600"
+                className="text-gray-600 hover:text-teal-600 cursor-pointer"
               >
                 Контакти
               </button>
