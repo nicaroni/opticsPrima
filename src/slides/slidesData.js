@@ -4,7 +4,7 @@
 const slideImages = [
   'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602934/optic-new_pu9ww5.jpg',
   'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602700/machine_is3le5.png',
-  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602907/model-4_kyvml0.jpg',
+  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746623464/model-4_kyvml0_c_fill_ar_1_1_g_auto_wodqpf.jpg',
   'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602904/model-7_aproln.jpg',
   'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602903/model-9_umxbqp.jpg'
 ];
