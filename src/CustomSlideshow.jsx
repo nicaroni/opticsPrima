@@ -3,6 +3,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AnimatedSlide from './slides/AnimatedSlide';
 import createSlidesData from './slides/slidesData';
+import ImagePreloader from './components/ImagePreloader';
+
+// This ensures images are actually loaded into cache
+function preloadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      resolve(img);
+    };
+    img.onerror = () => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(`Failed to preload: ${src}`);
+      }
+      reject(new Error(`Failed to preload ${src}`));
+    };
+  });
+}
 
 export default function CustomSlideshow({ scrollToSection }) {
   // Create slides with the navigation function
@@ -13,7 +31,16 @@ export default function CustomSlideshow({ scrollToSection }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [animationTrigger, setAnimationTrigger] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const [preloadedImages, setPreloadedImages] = useState([]);
   const containerRef = useRef(null);
+
+  const getNextSlideIndex = (current) => {
+    return current === slidesData.length - 1 ? 0 : current + 1;
+  };
+
+  const getPrevSlideIndex = (current) => {
+    return current === 0 ? slidesData.length - 1 : current - 1;
+  };
 
   // On mount, we "hide" for a moment, then show
   useEffect(() => {
@@ -32,30 +59,68 @@ export default function CustomSlideshow({ scrollToSection }) {
     return () => clearTimeout(timer);
   }, []);
 
+  // Preload all images on mount
+  useEffect(() => {
+    const allImageSrcs = slidesData.map(slide => slide.imageSrc);
+
+    // Preload all images manually
+    const preloadAllImages = async () => {
+      try {
+        const promises = allImageSrcs.map(src => preloadImage(src));
+        const loaded = await Promise.allSettled(promises);
+        setPreloadedImages(loaded.filter(result => result.status === 'fulfilled').map(result => result.value));
+      } catch (error) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error("Error preloading images:", error);
+        }
+      }
+    };
+
+    preloadAllImages();
+
+    return () => {
+      // Clean up preloaded images on unmount
+      setPreloadedImages([]);
+    };
+  }, []);
+
   // Helper: navigate to a new index
   const navigate = (newIndex) => {
-    if (isMoving) return; // block rapid clicks
+    if (isMoving) return;
     setIsMoving(true);
 
-    // Wrap index
-    const last = slidesData.length - 1;
-    if (newIndex < 0) newIndex = last;
-    else if (newIndex > last) newIndex = 0;
+    // Handle wrapping around for next and previous
+    const actualIndex = (newIndex + slidesData.length) % slidesData.length;
 
-    // 1) Trigger exit on the current slide
+    // Prefetch next and previous slides
+    const nextSlide = slidesData[(actualIndex + 1) % slidesData.length];
+    const prevSlide = slidesData[(actualIndex - 1 + slidesData.length) % slidesData.length];
+
+    // Force preload these specific images
+    Promise.all([
+      preloadImage(slidesData[actualIndex].imageSrc),
+      preloadImage(nextSlide.imageSrc),
+      preloadImage(prevSlide.imageSrc)
+    ]).catch(err => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error("Error preloading surrounding slides:", err);
+      }
+    });
+
+    // Trigger exit on current slide
     setIsExiting(true);
 
-    // 2) After the exit animation, switch the slide
+    // Use a slightly longer timeout to ensure smooth transition
     setTimeout(() => {
-      setActiveIndex(newIndex);        // new slide
-      setIsExiting(false);            // let it enter
-      setAnimationTrigger(prev => !prev); 
+      setActiveIndex(actualIndex);
+      setIsExiting(false);
+      setAnimationTrigger(prev => !prev);
 
-      // 3) After the new slide enters, allow navigation again
+      // Allow navigation again after the transition completes
       setTimeout(() => {
         setIsMoving(false);
-      }, 700); // match the .duration-700 in AnimatedSlide
-    }, 700);   // wait long enough for the old slide to exit
+      }, 900); // Slightly longer to ensure image has time to appear
+    }, 700);
   };
 
   // Auto-advance every 6s
@@ -69,8 +134,14 @@ export default function CustomSlideshow({ scrollToSection }) {
     return () => clearInterval(timer);
   }, [activeIndex, isMoving, isLoaded]);
 
+  // Preload not just next and previous, but all images
+  const allImageSrcs = slidesData.map(slide => slide.imageSrc);
+
   return (
     <>
+      {/* Preload ALL slide images on initial load */}
+      <ImagePreloader imageSrcs={allImageSrcs} />
+
       {/* Loading Overlay */}
       <div
         className={`fixed inset-0 bg-white z-50 transition-opacity duration-700 ${
@@ -140,6 +211,14 @@ export default function CustomSlideshow({ scrollToSection }) {
           ))}
         </div>
       </div>
+     
+      {/* Add the debugger in development mode only */}
+     {/* 
+      {process.env.NODE_ENV === 'development' && (
+        <ImageDebugger imageSrcs={allImageSrcs} />
+      )}
+     */} 
+
     </>
   );
 }

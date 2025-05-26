@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 /**
  * Unified animations, but respects textOnLeft:
@@ -27,6 +27,11 @@ export default function AnimatedSlide({
   // Whether each element is "visible" in its final position
   const [textVisible, setTextVisible] = useState(false);
   const [imageVisible, setImageVisible] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false); // Add a state to track image loading
+  const [imageError, setImageError] = useState(false); // Add error state
+
+  // Use a ref to keep track of the current image src
+  const currentImageSrcRef = useRef(imageSrc);
 
   // Re-run every time "animate" or "isExiting" changes
   useEffect(() => {
@@ -55,6 +60,27 @@ export default function AnimatedSlide({
     };
   }, [animate, isExiting]);
 
+  // Reset image states when image source changes
+  useEffect(() => {
+    // Only reset if the image source actually changed
+    if (currentImageSrcRef.current !== imageSrc) {
+      setImageLoaded(false);
+      setImageError(false);
+      currentImageSrcRef.current = imageSrc;
+      
+      // Preload the image
+      const img = new Image();
+      img.src = imageSrc;
+      img.onload = () => setImageLoaded(true);
+      img.onerror = () => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(`Failed to load image: ${imageSrc}`);
+        }
+        setImageError(true);
+      };
+    }
+  }, [imageSrc]);
+
   // For text: if textOnLeft => hidden state is "translate-x-[-20]", else "translate-x-[+20]"
   const textHidden = textOnLeft ? '-translate-x-20 opacity-0' : 'translate-x-20 opacity-0';
   const textVisibleState = 'translate-x-0 opacity-100';
@@ -63,11 +89,14 @@ export default function AnimatedSlide({
   const imageHidden = textOnLeft ? 'translate-x-20 opacity-0' : '-translate-x-20 opacity-0';
   const imageVisibleState = 'translate-x-0 opacity-100';
 
+  // Adjusted text classes - smaller width on mobile, responsive text sizes
   const textClasses = [
-    'w-1/2',
+    'w-2/5',            // Smaller width on all screens (40%)
+    'md:w-[45%]',       // Back to 45% on medium screens
     'lg:w-[45%]',
     'xl:w-[40%]',
-    'p-4',
+    'p-2',              // Less padding on mobile
+    'md:p-4',           // Back to normal padding on medium screens
     'rounded-lg',
     'transition-all',
     'duration-700',
@@ -76,8 +105,10 @@ export default function AnimatedSlide({
     textVisible ? textVisibleState : textHidden,
   ].join(' ');
 
+  // Adjusted image classes - larger width on mobile
   const imageClasses = [
-    'w-1/2',
+    'w-3/5',            // Larger width on all screens (60%)
+    'md:w-[45%]',       // Back to 45% on medium screens
     'lg:w-[45%]',
     'xl:w-[40%]',
     'rounded-lg',
@@ -93,20 +124,20 @@ export default function AnimatedSlide({
                     from-[#fdfbfb] to-[#ebedee] text-white px-6">
       <section className="min-h-screen bg-cover bg-center flex flex-row items-center 
                          justify-center text-white px-4 gap-6 relative overflow-hidden select-none">
-        {/* TEXT BLOCK */}
+        {/* TEXT BLOCK - Responsive text sizes */}
         {textOnLeft && (
           <div className={textClasses}>
-            <h1 className="text-4xl font-bold mb-4 text-gray-600">{title}</h1>
-            {subtitle && <h2 className="text-xl font-bold mb-4 text-gray-600">{subtitle}</h2>}
-            <p className="text-xl mb-6 max-w-xl text-gray-600">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 md:mb-4 text-gray-600">{title}</h1>
+            {subtitle && <h2 className="text-lg sm:text-xl font-bold mb-2 md:mb-4 text-gray-600">{subtitle}</h2>}
+            <p className="text-sm sm:text-lg md:text-xl mb-3 md:mb-6 max-w-xl text-gray-600">
               {description}
             </p>
             {buttons.length > 0 && (
-              <div className="space-x-4">
+              <div className="space-x-2 sm:space-x-4">
                 {buttons.map((btn, i) => (
                   <button
                     key={i}
-                    className={btn.className}
+                    className={`${btn.className} text-sm sm:text-base`}
                     onClick={btn.onClick}
                   >
                     {btn.label}
@@ -119,40 +150,57 @@ export default function AnimatedSlide({
 
         {/* IMAGE BLOCK */}
         <div className={imageClasses}>
-          {/* Simple placeholder */}
-          <div className="absolute inset-0 bg-gray-200 pointer-events-none" />
+          {/* Show placeholder while loading or on error */}
+          <div 
+            className={`absolute inset-0 bg-gray-200 rounded-lg transition-opacity duration-300 ${
+              imageLoaded && !imageError ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
+            {/* Show error icon if image failed to load */}
+            {imageError && (
+              <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+            )}
+          </div>
+          
           <img
+            key={imageSrc} // Add a key to force re-render when image changes
             src={imageSrc}
             loading="eager"
-            className="w-full h-[75vh] object-cover object-top rounded-lg shadow-lg
-                       transition-opacity duration-500 ease-in-out opacity-0"
-            onLoad={(e) => {
-              // Fade in the <img> once loaded
-              e.currentTarget.classList.remove('opacity-0');
-              // Fade out the placeholder
-              if (e.currentTarget.parentNode) {
-                const placeholder = e.currentTarget.parentNode.querySelector('div');
-                if (placeholder) placeholder.style.opacity = 0;
+            className={`w-full h-[75vh] object-cover object-center rounded-lg shadow-lg 
+                        transition-opacity duration-500 ease-in-out ${
+                          imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'
+                        }`}
+            onLoad={() => {
+              setImageLoaded(true);
+            }}
+            onError={() => {
+              if (process.env.NODE_ENV !== 'production') {
+                console.error(`Failed to load image: ${imageSrc}`);
               }
+              setImageError(true);
             }}
             alt="Slide visual"
           />
         </div>
 
-        {/* If text is on the right */}
+        {/* If text is on the right - Responsive text sizes */}
         {!textOnLeft && (
           <div className={textClasses}>
-            <h1 className="text-4xl font-bold mb-4 text-gray-600">{title}</h1>
-            {subtitle && <h2 className="text-xl font-bold mb-4 text-gray-600">{subtitle}</h2>}
-            <p className="text-xl mb-6 max-w-xl text-gray-600">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 md:mb-4 text-gray-600">{title}</h1>
+            {subtitle && <h2 className="text-lg sm:text-xl font-bold mb-2 md:mb-4 text-gray-600">{subtitle}</h2>}
+            <p className="text-sm sm:text-lg md:text-xl mb-3 md:mb-6 max-w-xl text-gray-600">
               {description}
             </p>
             {buttons.length > 0 && (
-              <div className="space-x-4">
+              <div className="space-x-2 sm:space-x-4">
                 {buttons.map((btn, i) => (
                   <button
                     key={i}
-                    className={btn.className}
+                    className={`${btn.className} text-sm sm:text-base`}
                     onClick={btn.onClick}
                   >
                     {btn.label}

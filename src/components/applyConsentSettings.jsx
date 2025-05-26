@@ -1,6 +1,9 @@
 // In src/components/applyConsentSettings.jsx
 export function applyConsentSettings(preferences) {
-  console.log('Applying consent settings:', preferences);
+  // Only log in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Applying consent settings:', preferences);
+  }
   
   // Facebook (marketing)
   if (preferences.marketing) {
@@ -17,25 +20,37 @@ export function applyConsentSettings(preferences) {
       el.parentNode.replaceChild(iframe, el);
     });
     
-    // Add Facebook Pixel graceful handling
+    // Handle Facebook pixel loading - with ad blocker detection
     try {
-      loadScript('https://connect.facebook.net/en_US/fbevents.js', 'fb-pixel')
-        .catch(err => console.log('Facebook Pixel loading skipped - likely blocked by user'));
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Attempting to load Facebook tracking');
+      }
+      
+      // Check if likely blocked by ad blocker
+      const adBlockDetected = isAdBlockerActive();
+      if (adBlockDetected) {
+        // Skip loading Facebook script if ad blocker detected
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Ad blocker detected, skipping Facebook tracking');
+        }
+        return;
+      }
+      
+      // Only try once, with error suppression
+      loadScriptSilently('https://connect.facebook.net/en_US/fbevents.js', 'fb-pixel');
     } catch (e) {
-      // Silently fail - user might have blocking extensions
+      // Silent fail
     }
   }
   
   // Calendly (functional)
   if (preferences.functional) {
-    loadScript('https://assets.calendly.com/assets/external/widget.js', 'calendly-script')
+    loadScriptSilently('https://assets.calendly.com/assets/external/widget.js', 'calendly-script')
       .then(() => {
-        // Re-initialize Calendly widgets if needed
-        const calendlyElements = document.querySelectorAll('.calendly-inline-widget');
         if (window.Calendly) {
+          const calendlyElements = document.querySelectorAll('.calendly-inline-widget');
           calendlyElements.forEach(el => {
             const url = el.dataset.url;
-            // Re-initialize Calendly
             window.Calendly.initInlineWidget({
               url: url,
               parentElement: el
@@ -43,13 +58,30 @@ export function applyConsentSettings(preferences) {
           });
         }
       })
-      .catch(err => console.warn('Calendly widget initialization failed:', err));
+      .catch(() => {});  // Silent fail
   }
 }
 
-// Also export this helper function
-export function loadScript(src, id) {
-  return new Promise((resolve, reject) => {
+// Simple ad blocker detection
+function isAdBlockerActive() {
+  // Most ad blockers block elements with these common ad-related class names
+  const testElem = document.createElement('div');
+  testElem.className = 'ads ad adsbox doubleclick pub_300x250 pub_300x250m pub_728x90 text-ad textAd';
+  testElem.style.height = '1px';
+  testElem.style.position = 'absolute';
+  testElem.style.left = '-10000px';
+  testElem.style.top = '-10000px';
+  document.body.appendChild(testElem);
+  
+  // Check if the element is hidden by ad blocker
+  const isBlocked = testElem.offsetHeight === 0;
+  document.body.removeChild(testElem);
+  return isBlocked;
+}
+
+// Load script silently without console errors
+export function loadScriptSilently(src, id, timeout = 5000) {
+  return new Promise((resolve) => {
     // Check if script already exists
     if (document.getElementById(id)) {
       resolve();
@@ -57,20 +89,61 @@ export function loadScript(src, id) {
     }
     
     try {
+      // Temporarily override console error to suppress script loading errors
+      const originalConsoleError = console.error;
+      const originalConsoleWarn = console.warn;
+      
+      // Only suppress errors related to the script we're trying to load
+      console.error = function(...args) {
+        if (args.some(arg => 
+            typeof arg === 'string' && 
+            (arg.includes(src) || arg.includes(id)))) {
+          return; // Suppress errors related to this script
+        }
+        return originalConsoleError.apply(console, args);
+      };
+      
+      console.warn = function(...args) {
+        if (args.some(arg => 
+            typeof arg === 'string' && 
+            (arg.includes(src) || arg.includes(id)))) {
+          return; // Suppress warnings related to this script
+        }
+        return originalConsoleWarn.apply(console, args);
+      };
+      
       const script = document.createElement('script');
       script.id = id;
       script.src = src;
       script.async = true;
-      script.onerror = (e) => {
-        console.warn(`Failed to load script: ${src}`);
-        // Don't reject to avoid breaking other functionality
+      
+      // Handle timeouts and errors silently
+      const timeoutId = setTimeout(() => {
+        // Restore console functions
+        console.error = originalConsoleError;
+        console.warn = originalConsoleWarn;
+        resolve(); // Resolve anyway after timeout
+      }, timeout);
+      
+      script.onerror = () => {
+        clearTimeout(timeoutId);
+        // Restore console functions
+        console.error = originalConsoleError;
+        console.warn = originalConsoleWarn;
+        resolve(); // Resolve anyway on error
+      };
+      
+      script.onload = () => {
+        clearTimeout(timeoutId);
+        // Restore console functions
+        console.error = originalConsoleError;
+        console.warn = originalConsoleWarn;
         resolve();
       };
-      script.onload = () => resolve();
+      
       document.head.appendChild(script);
     } catch (err) {
-      console.warn('Error loading script:', err);
-      resolve(); // Still resolve to avoid breaking functionality
+      resolve(); // Resolve anyway on exception
     }
   });
 }

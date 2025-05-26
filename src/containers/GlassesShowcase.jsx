@@ -1,6 +1,5 @@
 // src/containers/GlassesShowcase.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { glassesData } from './glassesData';
 import ImageLightbox from '../components/ImageLightbox';
 
@@ -11,10 +10,15 @@ export default function GlassesShowcase() {
   const [edgeOpacity, setEdgeOpacity] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const opacityTimerRef = useRef(null);
+  const containerRef = useRef(null);
   
   // New lightbox states
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  
+  // Touch handling states
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
   
   // Update items per page based on screen width
   useEffect(() => {
@@ -99,6 +103,31 @@ export default function GlassesShowcase() {
     }
   };
 
+  // Handle touch events for swipe
+  const handleTouchStart = (e) => {
+    setTouchEnd(null); // reset touch end
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+  
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+  
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const minSwipeDistance = 50; // minimum distance in px required for swipe
+    
+    if (distance > minSwipeDistance) {
+      // Swipe left, go to next
+      goToNextPage();
+    } else if (distance < -minSwipeDistance) {
+      // Swipe right, go to prev
+      goToPrevPage();
+    }
+  };
+
   const animateOpacityTo = (targetValue) => {
     const startValue = edgeOpacity;
     const startTime = performance.now();
@@ -152,24 +181,19 @@ export default function GlassesShowcase() {
 
   return (
     <div className="w-full py-2 px-4 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold mb-5  text-gray-700 text-center select-none">
+      <h2 className="text-3xl font-bold mb-5 text-gray-700 text-center select-none">
         Нашата колекция
       </h2>
 
       <div className="relative">
-        {/* Left arrow button (unchanged) */}
-        <button
-          onClick={goToPrevPage}
-          disabled={isAnimating}
-          className={`absolute -left-4 lg:-left-8 top-1/2 -translate-y-1/2 
-                    bg-white shadow-lg rounded-full p-2 z-10 select-none
-                    ${isAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
+        {/* Carousel container with touch events */}
+        <div 
+          className="overflow-hidden mx-auto w-full max-w-5xl py-1"
+          ref={containerRef}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
-          <ChevronLeftIcon className="h-6 w-6 text-gray-700" />
-        </button>
-
-        {/* Carousel container */}
-        <div className="overflow-hidden mx-auto w-full max-w-5xl py-1">
           {/* Sliding container */}
           <div
             className="flex transition-transform duration-700 ease-in-out"
@@ -234,7 +258,7 @@ export default function GlassesShowcase() {
 
                         {/* Clickable image container */}
                         <div 
-                          className="rounded-lg p-1 mb-1 w-full  h-36 sm:h-32 md:h-36 flex items-center justify-center"
+                          className="rounded-lg p-1 mb-1 w-full h-36 sm:h-32 md:h-36 flex items-center justify-center"
                           onClick={() => openLightbox(realIndex)}
                         >
                           <img
@@ -256,25 +280,14 @@ export default function GlassesShowcase() {
             ))}
           </div>
         </div>
-
-        {/* Right arrow button (unchanged) */}
-        <button
-          onClick={goToNextPage}
-          disabled={isAnimating}
-          className={`absolute -right-4 lg:-right-8 top-1/2 -translate-y-1/2 
-                    bg-white shadow-lg rounded-full p-2 z-10 select-none
-                    ${isAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
-        >
-          <ChevronRightIcon className="h-6 w-6 text-gray-700" />
-        </button>
       </div>
 
-      {/* Page indicators (unchanged) */}
-      <div className="flex justify-center  mt-6 sm:mt-10 gap-2 select-none">
+      {/* Page indicators */}
+      <div className="flex justify-center mt-6 sm:mt-10 gap-2 select-none">
         {[...Array(totalPages)].map((_, i) => (
           <button
             key={i}
-            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full  transition-all duration-300 ${
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
               currentPage === i ? 'bg-gray-700 w-4 sm:w-6' : 'bg-gray-300'
             }`}
             onClick={() => {
