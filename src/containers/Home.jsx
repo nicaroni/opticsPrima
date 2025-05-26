@@ -12,7 +12,7 @@ import ContactSection from '../components/ContactSection'; // Not from './Contac
 import HeroSection from '../components/HeroSection'; // Not fr
 import CookieSettings from '../components/CookieSettings'; // NEW
 import BrandGrid from './BrandGrid';
-import VideoSection from './VideoSection';
+
 
 import useScrollReveal from '../hooks/useScrollReveal';  // NEW
 import '../assets/styles/animation.css';
@@ -257,7 +257,7 @@ function Home() {
         imageSrc="/images/optic-new.jpg"
       />
 
-<VideoSection />
+
 
       {/* Testimonials */}
       <TestimonialsSection id="testimonials" />
