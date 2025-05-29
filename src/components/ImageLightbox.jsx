@@ -8,7 +8,8 @@ export default function ImageLightbox({
   allImages,
   onPrev,
   onNext,
-  currentIndex
+  currentIndex,
+  variant = 'default' // Add variant prop to support different layouts
 }) {
   // For touch swipe detection
   const [touchStart, setTouchStart] = useState(null);
@@ -87,8 +88,11 @@ export default function ImageLightbox({
 
   if (!isOpen) return null;
 
+  // Special styling for newGlasses variant
+  const isNewGlasses = variant === 'newGlasses';
+  
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4  bg-white bg-opacity-80 select-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white bg-opacity-80 select-none">
       {/* Close button with white circle and black X */}
       <button 
         onClick={onClose}
@@ -98,74 +102,75 @@ export default function ImageLightbox({
         <XMarkIcon className="w-6 h-6 text-black" />
       </button>
 
-      {/* Previous button with white circle and black arrow */}
-      <button 
-        onClick={onPrev}
-        className="absolute left-4 p-2 rounded-full bg-white hover:bg-gray-100 transition-all shadow-md"
-        aria-label="Previous image"
-      >
-        <ChevronLeftIcon className="w-6 h-6 text-black" />
-      </button>
-      
-      {/* Image container with touch event handlers */}
-      <div 
-        className="relative w-full max-w-4xl max-h-full flex items-center justify-center"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div 
-          className={`transition-transform duration-300 ease-out w-full flex items-center justify-center`}
-          style={{
-            transform: `translateX(${translateX}px)`
-          }}
+      {/* Container with defined dimensions and centered content */}
+      <div className="relative flex items-center justify-center w-full max-w-4xl ">
+        {/* Previous button - positioned relative to container */}
+        <button 
+          onClick={onPrev}
+          className={`absolute left-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white hover:bg-gray-100 transition-all shadow-md z-10 ${isNewGlasses ? 'ml-4' : ''}`}
+          aria-label="Previous image"
         >
-          <img 
-            src={currentImage?.src} 
-            alt={currentImage?.name} 
-            className="max-w-full max-h-[80vh] object-contain"
-            draggable="false"
-          />
+          <ChevronLeftIcon className="w-6 h-6 text-black" />
+        </button>
+        
+        {/* Fixed-size image container */}
+        <div 
+          className="relative flex items-center justify-center w-full "
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div 
+            className={`transition-transform duration-300 ease-out flex items-center justify-center ${isNewGlasses ? 'h-[60vh] w-full' : ''} `}
+            style={{
+              transform: `translateX(${translateX}px)`
+            }}
+          >
+            {/* Fixed aspect ratio container for consistent sizing */}
+            <div className={`${isNewGlasses ? 'w-full h-full flex items-center justify-center  rounded-2xl overflow-hidden p-2' : ''}`}>
+              <img 
+                src={currentImage?.src} 
+                alt={currentImage?.name} 
+                className={`${isNewGlasses ? 'max-w-full max-h-full object-contain rounded-xl shadow-sm' : 'max-w-full max-h-[80vh] object-contain'}`}
+                draggable="false"
+                style={isNewGlasses ? { borderRadius: '1rem' } : {}}
+              />
+            </div>
+          </div>
+          
+          {/* Swipe indicators (unchanged) */}
+          {isSwiping && translateX > 20 && (
+            <div className="absolute left-8 text-white bg-black bg-opacity-40 rounded-full p-6">
+              <ChevronLeftIcon className="w-8 h-8" />
+            </div>
+          )}
+          
+          {isSwiping && translateX < -20 && (
+            <div className="absolute right-8 text-white bg-black bg-opacity-40 rounded-full p-6">
+              <ChevronRightIcon className="w-8 h-8" />
+            </div>
+          )}
         </div>
-        
-        {/* Visual feedback indicators during swipe */}
-        {isSwiping && translateX > 20 && (
-          <div className="absolute left-8 text-white bg-black bg-opacity-40 rounded-full p-6">
-            <ChevronLeftIcon className="w-8 h-8" />
-          </div>
-        )}
-        
-        {isSwiping && translateX < -20 && (
-          <div className="absolute right-8 text-white bg-black bg-opacity-40 rounded-full p-6">
-            <ChevronRightIcon className="w-8 h-8" />
-          </div>
-        )}
-        
-       
 
-      {/* Next button with white circle and black arrow */}
-      <button 
-        onClick={onNext}
-        className="absolute right-4 p-2 rounded-full bg-white hover:bg-gray-100 transition-all shadow-md"
-        aria-label="Next image"
-      >
-        <ChevronRightIcon className="w-6 h-6 text-black" />
-      </button>
+        {/* Next button - positioned relative to container */}
+        <button 
+          onClick={onNext}
+          className={`absolute right-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white hover:bg-gray-100 transition-all shadow-md z-10 ${isNewGlasses ? 'mr-4' : ''}`}
+          aria-label="Next image"
+        >
+          <ChevronRightIcon className="w-6 h-6 text-black" />
+        </button>
+      </div>
       
       {/* Image counter */}
-      <div className="fixed bottom-25 left-1/2 -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-1 rounded-full z-[60] shadow-md">
-  {currentIndex + 1} / {allImages.length}
-    </div>  
-      
-     
+      <div className="fixed bottom-10 left-1/2 -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-1 rounded-full z-[60] shadow-md">
+        {currentIndex + 1} / {allImages.length}
       </div>
-      {/* Optional swipe instructions for users on first open */}
+      
+      {/* Swipe instructions */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 text-sm text-white bg-black bg-opacity-40 px-3 py-1 rounded-full opacity-70">
         Плъзнете за навигация
       </div>
-
-        {/* Product name */}
-      
     </div>
   );
 }

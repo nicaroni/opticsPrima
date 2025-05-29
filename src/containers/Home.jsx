@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import CustomSlideshow from '../CustomSlideshow'; // Same directory
 import BrandSlider from '../components/BrandSlider';
 import GlassesShowcase from '../containers/GlassesShowcase';
+import NewGlassesShowcase from '../containers/NewGlassesShowcase';
 import TestimonialsSection from '../containers/TestimonialsSection';
 import ContactSection from '../components/ContactSection'; // Not from './ContactSection'
 import HeroSection from '../components/HeroSection'; // Not fr
@@ -121,6 +122,14 @@ function Home() {
       >
         <BrandSlider  scrollToSection={scrollToSection}/>
       </div>
+
+        {/* NewGlases Showcase */}
+      <section
+        id=""
+        className="bg-gradient-to-br from-gray-50 to-gray-100 py-6 flex flex-col items-center justify-center px-4 text-center"
+      >
+        <NewGlassesShowcase />
+      </section>
 
       {/* Hero: Dioptric Glasses */}
       <HeroSection
