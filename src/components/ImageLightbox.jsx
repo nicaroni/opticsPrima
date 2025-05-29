@@ -96,38 +96,40 @@ export default function ImageLightbox({
       {/* Close button with white circle and black X */}
       <button 
         onClick={onClose}
-        className="absolute top-4 right-10 p-6 rounded-full bg-white hover:bg-gray-100 transition-all z-100 shadow-md"
+        className="absolute top-4 right-[20px] p-6 rounded-full bg-white hover:bg-gray-100 transition-all z-100 shadow-md"
         aria-label="Close lightbox"
       >
         <XMarkIcon className="w-6 h-6 text-black" />
       </button>
 
       {/* Container with defined dimensions and centered content */}
-      <div className="relative flex items-center justify-center w-full max-w-4xl ">
+      <div className="relative flex items-center justify-center w-full max-w-4xl">
         {/* Previous button - positioned relative to container */}
         <button 
           onClick={onPrev}
-          className={`absolute left-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white hover:bg-gray-100 transition-all shadow-md z-10 ${isNewGlasses ? 'ml-4' : ''}`}
+          className={`absolute left-[30px] sm:left-4 md:left-0 top-1/2 -translate-y-1/2 p-2 rounded-full 
+            bg-white hover:bg-gray-100 transition-all shadow-md z-10 
+            ${isNewGlasses ? '-translate-x-full sm:-translate-x-3/4 md:-translate-x-full' : ''}`}
           aria-label="Previous image"
         >
           <ChevronLeftIcon className="w-6 h-6 text-black" />
         </button>
         
-        {/* Fixed-size image container */}
+        {/* Fixed-size image container with reduced width on mobile */}
         <div 
-          className="relative flex items-center justify-center w-full "
+          className="relative flex items-center justify-center w-[85%] sm:w-[90%] md:w-[95%] lg:w-full"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
           <div 
-            className={`transition-transform duration-300 ease-out flex items-center justify-center ${isNewGlasses ? 'h-[60vh] w-full' : ''} `}
+            className={`transition-transform duration-300 ease-out flex items-center justify-center ${isNewGlasses ? 'h-[60vh] w-full' : ''}`}
             style={{
               transform: `translateX(${translateX}px)`
             }}
           >
             {/* Fixed aspect ratio container for consistent sizing */}
-            <div className={`${isNewGlasses ? 'w-full h-full flex items-center justify-center  rounded-2xl overflow-hidden p-2' : ''}`}>
+            <div className={`${isNewGlasses ? 'w-full h-full flex items-center justify-center rounded-2xl overflow-hidden p-2' : ''}`}>
               <img 
                 src={currentImage?.src} 
                 alt={currentImage?.name} 
@@ -140,14 +142,14 @@ export default function ImageLightbox({
           
           {/* Swipe indicators (unchanged) */}
           {isSwiping && translateX > 20 && (
-            <div className="absolute left-8 text-white bg-black bg-opacity-40 rounded-full p-6">
-              <ChevronLeftIcon className="w-8 h-8" />
+            <div className="absolute left-8 text-white  rounded-full p-6">
+              <ChevronLeftIcon className="" />
             </div>
           )}
           
           {isSwiping && translateX < -20 && (
-            <div className="absolute right-8 text-white bg-black bg-opacity-40 rounded-full p-6">
-              <ChevronRightIcon className="w-8 h-8" />
+            <div className="absolute right-8 text-white  rounded-full p-6">
+              <ChevronRightIcon className="" />
             </div>
           )}
         </div>
@@ -155,7 +157,9 @@ export default function ImageLightbox({
         {/* Next button - positioned relative to container */}
         <button 
           onClick={onNext}
-          className={`absolute right-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white hover:bg-gray-100 transition-all shadow-md z-10 ${isNewGlasses ? 'mr-4' : ''}`}
+          className={`absolute right-[30px] sm:right-4 md:right-0 top-1/2 -translate-y-1/2 p-2 rounded-full 
+            bg-white hover:bg-gray-100 transition-all shadow-md z-10 
+            ${isNewGlasses ? 'translate-x-full sm:translate-x-3/4 md:translate-x-full' : ''}`}
           aria-label="Next image"
         >
           <ChevronRightIcon className="w-6 h-6 text-black" />
