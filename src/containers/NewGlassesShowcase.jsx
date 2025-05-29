@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { newGlassesData } from './newGlassesData';
 import ImageLightbox from '../components/ImageLightbox';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 
 export default function NewGlassesShowcase() {
   // Existing states
@@ -25,13 +26,13 @@ export default function NewGlassesShowcase() {
     const updateItemsPerPage = () => {
       const width = window.innerWidth;
       if (width < 640) {
-        setItemsPerPage(1); // Mobile: 1 item
+        setItemsPerPage(2); // Mobile: 2 items
       } else if (width < 768) {
-        setItemsPerPage(2); // Small tablets: 2 items
+        setItemsPerPage(3); // Small tablets: 3 items
       } else if (width < 1024) {
-        setItemsPerPage(3); // Medium screens: 3 items
+        setItemsPerPage(4); // Medium screens: 4 items
       } else {
-        setItemsPerPage(4); // Large screens: 4 items
+        setItemsPerPage(6); // Large screens: 6 items
       }
     };
 
@@ -180,7 +181,7 @@ export default function NewGlassesShowcase() {
   };
 
   return (
-    <div className="w-full py-2 px-4 max-w-7xl mx-auto">
+    <div className="w-full py-2 px-9 max-w-7xl mx-auto">
       <h2 className="text-3xl font-bold mb-1 text-gray-700 text-center select-none">
         Нашите нови попълнения
       </h2>
@@ -189,9 +190,34 @@ export default function NewGlassesShowcase() {
       </h4>
 
       <div className="relative">
+        {/* Left navigation arrow */}
+        <button
+          onClick={goToPrevPage}
+          disabled={isAnimating}
+          className="absolute left-[-30px] sm:-left-[40px] md:-left-10 lg:-left-10 top-1/2 -translate-y-1/2 
+            p-1 sm:p-2 rounded-full bg-white hover:bg-gray-100 transition-all shadow-md z-10 
+            focus:outline-none focus:ring-2 focus:ring-gray-300 disabled:opacity-50 
+            disabled:cursor-not-allowed"
+          aria-label="Previous page"
+        >
+          <ChevronLeftIcon className="w-4 h-4 sm:w-6 sm:h-6 text-gray-700" />
+        </button>
+
+        {/* Right navigation arrow */}
+        <button
+          onClick={goToNextPage}
+          disabled={isAnimating}
+          className="absolute right-[-30px] sm:-right-[40px] md:-right-10 lg:-right-10 top-1/2 -translate-y-1/2 
+            p-1 sm:p-2 rounded-full bg-white hover:bg-gray-100 transition-all shadow-md z-10 
+            focus:outline-none focus:ring-2 focus:ring-gray-300 disabled:opacity-50 
+            disabled:cursor-not-allowed"
+          aria-label="Next page"
+        >
+          <ChevronRightIcon className="w-4 h-4 sm:w-6 sm:h-6 text-gray-700" />
+        </button>
+
         {/* Carousel container with touch events */}
-        <div 
-          className="overflow-hidden mx-auto w-full max-w-5xl py-1"
+        <div className="overflow-hidden mx-auto w-full max-w-5xl py-1"
           ref={containerRef}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -226,13 +252,13 @@ export default function NewGlassesShowcase() {
                   return (
                     <div
                       key={`${glasses.id}-${pageIndex}-${index}`}
-                      className="px-2 relative"
+                      className="px-2  relative"
                       style={{ width: `${itemWidth}%` }}
                     >
                       <div
                         className="bg-white rounded-lg p-3 shadow-sm flex flex-col items-center h-full
                                transition-all duration-1000 ease-in-out hover:shadow-md hover:-translate-y-1
-                               relative cursor-pointer select-none"
+                               relative cursor-pointer select-none "
                       >
                         {/* First/last item fade effects (unchanged) */}
                         {index === 0 && (

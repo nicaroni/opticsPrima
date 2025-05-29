@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { glassesData } from './glassesData';
 import ImageLightbox from '../components/ImageLightbox';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 
 export default function GlassesShowcase() {
   // Existing states
@@ -186,6 +187,32 @@ export default function GlassesShowcase() {
       </h2>
 
       <div className="relative">
+        {/* Left navigation arrow */}
+        <button
+          onClick={goToPrevPage}
+          disabled={isAnimating}
+          className="absolute left-[-30px] sm:-left-[40px] md:-left-10 lg:-left-7 top-1/2 -translate-y-1/2 
+            p-1 sm:p-2 rounded-full bg-white hover:bg-gray-100 transition-all shadow-md z-10 
+            focus:outline-none focus:ring-2 focus:ring-gray-300 disabled:opacity-50 
+            disabled:cursor-not-allowed"
+          aria-label="Previous page"
+        >
+          <ChevronLeftIcon className="w-4 h-4 sm:w-6 sm:h-6 text-gray-700" />
+        </button>
+
+        {/* Right navigation arrow */}
+        <button
+          onClick={goToNextPage}
+          disabled={isAnimating}
+          className="absolute right-[-30px] sm:-right-[40px] md:-right-10 lg:-right-7 top-1/2 -translate-y-1/2 
+            p-1 sm:p-2 rounded-full bg-white hover:bg-gray-100 transition-all shadow-md z-10 
+            focus:outline-none focus:ring-2 focus:ring-gray-300 disabled:opacity-50 
+            disabled:cursor-not-allowed"
+          aria-label="Next page"
+        >
+          <ChevronRightIcon className="w-4 h-4 sm:w-6 sm:h-6 text-gray-700" />
+        </button>
+
         {/* Carousel container with touch events */}
         <div 
           className="overflow-hidden mx-auto w-full max-w-5xl py-1"
