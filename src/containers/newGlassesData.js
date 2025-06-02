@@ -14,7 +14,6 @@ export const newGlassesData = [
   { id: 11, src: 'https://res.cloudinary.com/dlgs5lzds/image/upload/v1748519788/11_k7xpus.png', name: '' },
   { id: 12, src: 'https://res.cloudinary.com/dlgs5lzds/image/upload/v1748519788/12_hny0w4.png', name: '' },
 { id: 13, src: 'https://res.cloudinary.com/dlgs5lzds/image/upload/v1748519789/13_io7j1a.png', name: '' },
-  { id: 14, src: 'https://res.cloudinary.com/dlgs5lzds/image/upload/v1748519789/14_p7ppc9.png', name: '' },
   { id: 15, src: 'https://res.cloudinary.com/dlgs5lzds/image/upload/v1748519789/15_qssqd0.png', name: '' },
   { id: 16, src: 'https://res.cloudinary.com/dlgs5lzds/image/upload/v1748519789/16_ymxvv8.png', name: '' },
   { id: 17, src: 'https://res.cloudinary.com/dlgs5lzds/image/upload/v1748519789/17_xehosp.png', name: '' },
