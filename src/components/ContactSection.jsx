@@ -244,24 +244,7 @@ export default function ContactSection() {
         </div>
 
         {/* RIGHT COLUMN - Keep the same */}
-        <div 
-          className={`contact-column md:w-1/3 flex justify-center h-[750px] transition-all duration-700 ease-out relative
-            ${columnsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-16'}`}
-          style={{ transitionDelay: '400ms' }}
-        >
-          <div
-            className="calendly-inline-widget w-full h-full rounded-xl shadow-lg overflow-hidden"
-            data-url="https://calendly.com/optikacarevo/30min"
-          />
-          {!calendlyLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white rounded-xl shadow-lg">
-              <div className="text-center">
-                <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                <p className="mt-4 text-blue-600 font-medium">Зареждане на календара...</p>
-              </div>
-            </div>
-          )}
-        </div>
+        
       </div>
     </section>
   );
