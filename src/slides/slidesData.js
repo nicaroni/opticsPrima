@@ -2,11 +2,11 @@
 
 // Use Cloudinary URLs for better performance and delivery
 const slideImages = [
-  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602934/optic-new_pu9ww5.jpg',
-  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602700/machine_is3le5.png',
-  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746623464/model-4_kyvml0_c_fill_ar_1_1_g_auto_wodqpf.jpg',
-  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602904/model-7_aproln.jpg',
-  'https://res.cloudinary.com/di2eg83ws/image/upload/v1746602903/model-9_umxbqp.jpg'
+  'https://res.cloudinary.com/dlgs5lzds/image/upload/v1750848861/optic-new_jsqzot.jpg',
+  'https://res.cloudinary.com/dlgs5lzds/image/upload/v1750848860/machine_ur0ib8.png',
+  'https://res.cloudinary.com/dlgs5lzds/image/upload/v1750848902/model-4_egplpp.jpg',
+  'https://res.cloudinary.com/dlgs5lzds/image/upload/v1750848860/model-7_lszxcu.jpg',
+  'https://res.cloudinary.com/dlgs5lzds/image/upload/v1750848860/model-9_xiwngv.jpg'
 ];
 
 // We can remove the cache buster since Cloudinary handles versioning
