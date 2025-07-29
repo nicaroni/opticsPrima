@@ -132,6 +132,38 @@ function Home() {
       </section>
 
       {/* Hero: Dioptric Glasses */}
+<HeroSection
+  id="optika-carevo-main"
+  title="Оптика Прима Царево - Очен преглед и висококачествени очила"
+  text={`[[Водещата оптика в Царево от 2005 година]] – предлагаме професионални очни прегледи и висококачествени очила на ул. Хан Аспарух №39.
+
+[[✔️ Професионален очен преглед с модерна апаратура Charops CRK-1P]]
+
+[[✔️ Диоптрични очила с оригинални стъкла от ZEISS, Essilor, HOYA и NIKON]]
+
+[[✔️ Слънчеви очила с UV защита и поляризация за всеки сезон]]
+
+[[✔️ Експертна консултация от опитен оптометрист]]
+
+[[✔️ Удобна локация в центъра на Царево]]
+
+{{В Оптика Прима Царево вярваме, че доброто зрение е съчетание от точна диагностика, качествени материали и професионално отношение.}} 
+
+За записване на час за очен преглед в Царево или въпроси, позвънете на: [[088 573 9790]]`}
+  imageSrc="https://res.cloudinary.com/dlgs5lzds/image/upload/v1753796480/glass-woman20_se9qu3.jpg"
+  reverse
+  extraContent={
+    <a href="tel:+35988573979" className="inline-block mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-full transition-colors duration-300 shadow-md">
+      <span className="flex items-center">
+        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+        </svg>
+        Обадете се сега: 088 573 9790
+      </span>
+    </a>
+  }
+/>
+
       <HeroSection
         id="dioptric"
         title="Диоптрични очила"

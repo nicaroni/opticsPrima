@@ -125,7 +125,7 @@ export default function ContactSection() {
                           data-src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Foptikacarevo"
                           data-class="w-full h-full rounded-b-xl"
                         >
-                          <p className="text-sm text-gray-500">Facebook съдържание (изисква съгласие за маркетингови бисквитки)</p>
+                          <p className="text-sm text-gray-500">Следвайте ни във Facebook за актуални промоции и нови модели очила</p>
                         </div>
                       )}
                     </div>
@@ -152,11 +152,7 @@ export default function ContactSection() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center space-x-2 hover:opacity-80 mb-1"
                   >
-                    <img
-                      src="/viber.png"
-                      alt="Viber Icon"
-                      className="h-7 w-7"
-                    />
+                    <img src="/viber.png" alt="Свържете се чрез Viber" className="w-5 h-5 mr-2" />
                     <span className="text-sm font-semibold">+359889962200</span>
                   </a>
                   <a 
